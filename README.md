@@ -15,6 +15,9 @@ npm start         # http://localhost:4021
 
 `npm test` runs the inventory test suite (26 assertions, no framework).
 
+Screenshots of the running build are in [`screenshots/`](screenshots) if you
+want to see it before running it.
+
 ---
 
 ## What is here
