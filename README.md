@@ -18,6 +18,24 @@ npm start         # http://localhost:4021
 Screenshots of the running build are in [`screenshots/`](screenshots) if you
 want to see it before running it.
 
+### There is also a single-file brochure demo
+
+`demo/tour-website-demo.html` is a separate, much simpler mock-up: one file,
+no server, no install. Double-click it and it opens. Seven pages (Home, Places
+To Visit, Tours, Trekking, Gallery, Reviews, Contact), a working enquiry form,
+hand-drawn SVG artwork, and the web font inlined as base64 — so it renders
+identically with no internet connection and makes zero external requests.
+
+Rebuild it after editing `demo/_source.html`:
+
+```bash
+python3 tools/build-demo.py
+```
+
+It exists because the client asked for something like a Google Sites brochure
+rather than a booking engine, and needed something clickable rather than a
+repository.
+
 ---
 
 ## What is here

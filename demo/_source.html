@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ladakh Journeys — sample tour website</title>
+<!--
+  SINGLE-FILE DEMO
+  ================
+  Everything is inside this one file: styles, artwork, fonts, page logic.
+  No internet needed, nothing to install. Double-click it and it opens.
+
+  The artwork is hand-drawn SVG so the file stays small and carries no photo
+  licence. Real photographs drop straight in to replace it.
+
+  Company name, prices and text are samples for the mock-up only.
+-->
+<style>
+@font-face {
+  font-family: 'KarlaEmb';
+  src: url(data:font/woff2;base64,__KARLA_B64__) format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --sand:    #f8f4ec;
+  --sand-2:  #f0e9dc;
+  --card:    #fffdf8;
+  --ink:     #1f1b15;
+  --ink-2:   #453d32;
+  --ink-3:   #6f6557;
+  --line:    #ded2bd;
+  --line-2:  #c3b393;
+  --indigo:  #1f3a5f;
+  --indigo-2:#2c527f;
+  --turq:    #1b7c89;
+  --saffron: #c4631a;
+  --maroon:  #7a2b2b;
+  --sans: 'KarlaEmb', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--sand);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 700; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.1rem, 1.5rem + 2.6vw, 3.4rem); }
+h2 { font-size: clamp(1.6rem, 1.3rem + 1.3vw, 2.3rem); }
+h3 { font-size: 1.22rem; }
+p { margin: 0 0 1em; }
+a { color: var(--saffron); }
+img, svg { max-width: 100%; }
+
+.wrap { width: 100%; max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+.mono-label {
+  font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+  font-weight: 700; color: var(--turq);
+}
+
+/* ---------- prayer-flag strip: five colours, in the traditional order ---- */
+.flagstrip { display: flex; height: 5px; }
+.flagstrip i { flex: 1; }
+.flagstrip i:nth-child(5n+1) { background: #2f6fb5; }
+.flagstrip i:nth-child(5n+2) { background: #f2f2ee; }
+.flagstrip i:nth-child(5n+3) { background: #c0392b; }
+.flagstrip i:nth-child(5n+4) { background: #1e8449; }
+.flagstrip i:nth-child(5n+5) { background: #e8a12c; }
+
+/* ---------- demo notice ------------------------------------------------- */
+.demobar {
+  background: #2b2621; color: #f3ead9; font-size: 0.86rem; padding: 9px 0;
+}
+.demobar .wrap { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.demobar b { color: #ffc978; }
+
+/* ---------- header ------------------------------------------------------ */
+header.site {
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 40;
+}
+header.site .wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 18px; min-height: 74px; flex-wrap: wrap;
+}
+.brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--ink); }
+.brand svg { width: 38px; height: 38px; flex: none; }
+.brand .bn { font-family: var(--serif); font-weight: 700; font-size: 1.22rem; line-height: 1.1; }
+.brand .bt { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-3); }
+
+nav.main { display: flex; flex-wrap: wrap; gap: 4px; }
+nav.main a {
+  font-size: 0.83rem; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--ink-2); text-decoration: none;
+  padding: 8px 11px; border-radius: 4px; border-bottom: 2px solid transparent;
+}
+nav.main a:hover { background: var(--sand-2); color: var(--ink); }
+nav.main a.on { color: var(--indigo); border-bottom-color: var(--saffron); }
+
+/* ---------- buttons ----------------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: inherit; font-weight: 700; font-size: 0.9rem;
+  padding: 12px 20px; border-radius: 4px; cursor: pointer;
+  text-decoration: none; border: 2px solid var(--saffron);
+  background: var(--saffron); color: #fff;
+  transition: background .18s, border-color .18s, transform .1s;
+}
+.btn:hover { background: #a9520f; border-color: #a9520f; color: #fff; }
+.btn:active { transform: translateY(1px); }
+.btn.ghost { background: transparent; color: var(--indigo); border-color: var(--line-2); }
+.btn.ghost:hover { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+.btn.wa { background: #1f8a4c; border-color: #1f8a4c; }
+.btn.wa:hover { background: #176b3b; border-color: #176b3b; }
+
+/* ---------- hero -------------------------------------------------------- */
+.hero { position: relative; background: var(--indigo); overflow: hidden; }
+.hero .art { display: block; width: 100%; height: clamp(330px, 46vw, 500px); }
+.hero .cap {
+  position: absolute; inset: auto 0 0 0;
+  padding: clamp(42px, 8vw, 84px) 0 clamp(22px, 4vw, 44px);
+  /* The waterline in the artwork is pale, so the caption carries its own
+     gradient. Kept shallow on purpose — the top half of the picture stays
+     vivid and only the band under the text is darkened. */
+  background: linear-gradient(to bottom, rgba(12,20,30,0) 0%, rgba(12,20,30,.30) 30%, rgba(12,20,30,.72) 72%, rgba(12,20,30,.84) 100%);
+}
+.hero .cap h1 { color: #fff; text-shadow: 0 2px 18px rgba(0,0,0,.45); max-width: 20ch; }
+.hero .cap p {
+  color: #f0e7d6; max-width: 46ch; margin-top: 12px; font-size: 1.05rem;
+  text-shadow: 0 1px 12px rgba(0,0,0,.5);
+}
+.hero .cap .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+
+/* ---------- sections ---------------------------------------------------- */
+.page { display: none; }
+.page.on { display: block; animation: fade .35s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+section.band { padding: clamp(38px, 6vw, 72px) 0; }
+section.band.sunk { background: var(--sand-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+
+.sec-head { margin-bottom: 26px; }
+.sec-head h2 { margin-top: 6px; }
+.sec-head p { color: var(--ink-3); max-width: 60ch; margin-top: 10px; }
+
+.grid { display: grid; gap: 22px; }
+.g3 { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+.g2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.g4 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+  overflow: hidden; display: flex; flex-direction: column;
+  transition: box-shadow .22s, transform .22s, border-color .22s;
+}
+.card:hover { box-shadow: 0 14px 30px -20px rgba(31,27,21,.5); transform: translateY(-3px); border-color: var(--line-2); }
+.card .art { display: block; width: 100%; height: 170px; }
+.card .body { padding: 16px 17px 18px; display: flex; flex-direction: column; flex: 1; }
+.card h3 { margin-bottom: 7px; }
+.card .meta {
+  font-size: 0.76rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--turq); margin-bottom: 8px;
+}
+.card p { color: var(--ink-3); font-size: 0.95rem; margin-bottom: 14px; }
+.card .foot {
+  margin-top: auto; padding-top: 13px; border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.price { font-weight: 700; font-size: 1.06rem; color: var(--ink); white-space: nowrap; }
+.price small { display: block; font-size: 0.67rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+
+/* ---------- intro split ------------------------------------------------- */
+.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: clamp(22px, 4vw, 44px); align-items: center; }
+.split .art-box { border: 1px solid var(--line-2); border-radius: 6px; overflow: hidden; background: var(--sand-2); }
+.split .art-box svg { display: block; width: 100%; height: clamp(230px, 30vw, 320px); }
+
+.ticks { list-style: none; padding: 0; margin: 0 0 20px; }
+.ticks li { position: relative; padding: 6px 0 6px 28px; color: var(--ink-2); }
+.ticks li::before {
+  content: ''; position: absolute; left: 4px; top: 15px;
+  width: 9px; height: 9px; border-radius: 50%; background: var(--saffron);
+}
+
+/* ---------- trek table -------------------------------------------------- */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--card); }
+table { width: 100%; border-collapse: collapse; font-size: 0.94rem; min-width: 620px; }
+th, td { text-align: left; padding: 13px 15px; border-bottom: 1px solid var(--line); }
+th { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); background: var(--sand-2); }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: #fbf6ea; }
+.tag {
+  display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 3px; white-space: nowrap;
+}
+.tag.easy { background: #e2efe4; color: #1e6b3a; }
+.tag.mod  { background: #fdf0dc; color: #96560d; }
+.tag.hard { background: #f6e1de; color: #8f2b22; }
+
+/* ---------- gallery ----------------------------------------------------- */
+.gal { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.gal figure { margin: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--card); }
+.gal svg { display: block; width: 100%; height: 165px; }
+.gal figcaption { padding: 9px 12px; font-size: 0.8rem; color: var(--ink-3); border-top: 1px solid var(--line); }
+
+/* ---------- testimonials ------------------------------------------------ */
+.quote {
+  background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--turq);
+  border-radius: 6px; padding: 20px 22px;
+}
+.quote p { font-family: var(--serif); font-size: 1.05rem; color: var(--ink-2); font-style: italic; }
+.quote .who { font-size: 0.85rem; font-weight: 700; color: var(--ink); }
+.quote .where { font-size: 0.8rem; color: var(--ink-3); }
+.stars { color: #e0a72c; letter-spacing: 2px; margin-bottom: 10px; }
+
+/* ---------- contact ----------------------------------------------------- */
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: clamp(22px, 4vw, 40px); align-items: start; }
+.field { margin-bottom: 15px; }
+.field label { display: block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 5px; }
+.field input, .field select, .field textarea {
+  width: 100%; font: inherit; font-size: 0.97rem; color: var(--ink);
+  background: var(--card); border: 1px solid var(--line-2); border-radius: 4px; padding: 10px 12px;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--saffron); box-shadow: 0 0 0 3px #f6e3d3;
+}
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0 15px; }
+.infobox { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+.infobox dl { margin: 0; }
+.infobox dt { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-top: 15px; }
+.infobox dt:first-child { margin-top: 0; }
+.infobox dd { margin: 3px 0 0; font-weight: 700; }
+.sent {
+  display: none; margin-top: 15px; padding: 14px 16px; border-radius: 5px;
+  background: #e4efe6; border: 1px solid #a9ccb2; color: #1c5f36; font-size: 0.93rem;
+}
+.sent.show { display: block; }
+
+/* ---------- footer ------------------------------------------------------ */
+footer.site { background: #241f1a; color: #d8cebb; padding: 40px 0 0; margin-top: 10px; }
+footer.site h4 { color: #fff; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; font-family: var(--sans); margin-bottom: 12px; }
+footer.site a { color: #f0e3cd; text-decoration: none; }
+footer.site a:hover { color: #fff; text-decoration: underline; }
+footer.site ul { list-style: none; padding: 0; margin: 0; }
+footer.site li { padding: 3px 0; font-size: 0.92rem; }
+footer.site .fg { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 28px; }
+footer.site .base {
+  margin-top: 32px; border-top: 1px solid rgba(255,255,255,.14); padding: 16px 0 22px;
+  font-size: 0.8rem; color: #a99c86; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+}
+
+@media (max-width: 720px) {
+  header.site .wrap { min-height: 0; padding-top: 12px; padding-bottom: 10px; }
+  nav.main { width: 100%; }
+  nav.main a { padding: 7px 9px; font-size: 0.78rem; }
+  .hero .cap { position: static; background: var(--indigo); padding: 24px 0 30px; }
+  .hero .cap h1, .hero .cap p { text-shadow: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================ artwork library ========================= -->
+<!-- Drawn once here, reused by reference throughout the page. Swap any of
+     these for a real photograph later; the layout does not change. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="skyDay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#173a63"/><stop offset="55%" stop-color="#4d86b8"/><stop offset="100%" stop-color="#c8ddea"/>
+    </linearGradient>
+    <linearGradient id="skyDusk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a2547"/><stop offset="55%" stop-color="#8b5566"/><stop offset="100%" stop-color="#e8b077"/>
+    </linearGradient>
+    <linearGradient id="skyDawn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1d3355"/><stop offset="60%" stop-color="#7f93ab"/><stop offset="100%" stop-color="#eed9b4"/>
+    </linearGradient>
+    <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1c7f91"/><stop offset="100%" stop-color="#0d4a5c"/>
+    </linearGradient>
+    <radialGradient id="sunGlow">
+      <stop offset="0%" stop-color="#fdf6e4" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#fdf6e4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rock" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9a7550"/><stop offset="100%" stop-color="#6b4c31"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Pangong Tso: turquoise water under bare ridges -->
+  <symbol id="a-pangong" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+    <rect width="400" height="260" fill="url(#skyDay)"/>
+    <circle cx="316" cy="52" r="20" fill="#fdf6e4" opacity=".85"/>
+    <path d="M0 132 L48 96 L86 118 L128 84 L172 116 L214 90 L262 120 L312 92 L356 116 L400 100 L400 150 L0 150Z" fill="#8a6a4a"/>
+    <path d="M0 140 L40 122 L84 138 L140 114 L186 134 L240 112 L292 136 L344 118 L400 138 L400 156 L0 156Z" fill="#6d4f34"/>
+    <path d="M128 84 L142 98 L114 98Z" fill="#f4f1ea" opacity=".9"/>
+    <path d="M214 90 L228 104 L200 104Z" fill="#f4f1ea" opacity=".85"/>
+    <rect x="0" y="152" width="400" height="108" fill="url(#lake)"/>
+    <g stroke="#9fd8e0" stroke-width="2" opacity=".45" fill="none">
+      <path d="M22 176h58M112 172h74M214 180h52M292 174h66M56 200h84M170 204h96M286 198h70M34 224h110M180 228h78"/>
+    </g>
+    <path d="M0 150 L400 150 L400 156 L0 156Z" fill="#e6d3ae" opacity=".55"/>
+  </symbol>
+
+  <!-- Nubra: sand dunes with a two-humped camel train -->
+  <symbol id="a-nubra" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+    <rect width="400" height="260" fill="url(#skyDawn)"/>
+    <circle cx="86" cy="60" r="24" fill="#fff3d4" opacity=".9"/>
+    <path d="M0 120 L54 88 L104 112 L158 80 L212 110 L268 84 L322 112 L400 92 L400 140 L0 140Z" fill="url(#rock)"/>
+    <path d="M158 80 L172 96 L144 96Z" fill="#f6f2e8"/>
+    <path d="M0 140 C60 126 110 152 168 142 C230 132 270 154 330 144 C362 139 382 146 400 142 L400 260 L0 260Z" fill="#d9b478"/>
+    <path d="M0 178 C70 164 122 190 190 180 C252 171 300 192 400 180 L400 260 L0 260Z" fill="#c29455"/>
+    <path d="M0 216 C80 204 140 226 214 216 C288 206 340 224 400 214 L400 260 L0 260Z" fill="#9d7039"/>
+    <g fill="#4a3018">
+      <path d="M150 210c3-8 9-9 13-4 3-6 9-6 12 1 4-7 10-5 11 3l2 10h-4l-1-5-2 14h-4l-1-12-8 1-1 11h-4l-1-11-6-1-2 12h-4z"/>
+      <path d="M196 214c2-6 7-7 10-3 3-5 7-4 9 1 3-5 8-4 9 2l1 8h-3l-1-4-2 11h-3l-1-9-6 1-1 8h-3l-1-8-5-1-2 9h-3z"/>
+    </g>
+  </symbol>
+
+  <!-- Hilltop gompa (monastery), stacked white blocks -->
+  <symbol id="a-gompa" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+    <rect width="400" height="260" fill="url(#skyDay)"/>
+    <path d="M0 150 L56 108 L112 140 L166 96 L228 138 L286 104 L344 142 L400 112 L400 260 L0 260Z" fill="#8b6844"/>
+    <path d="M0 196 L70 170 L140 194 L210 166 L282 192 L350 172 L400 190 L400 260 L0 260Z" fill="#6a4c30"/>
+    <g>
+      <path d="M150 196 L150 152 L196 138 L242 152 L242 196Z" fill="#f2ece0"/>
+      <path d="M162 152 L162 122 L196 110 L230 122 L230 152Z" fill="#f7f3ea"/>
+      <path d="M178 122 L178 100 L196 92 L214 100 L214 122Z" fill="#fbf8f1"/>
+      <path d="M144 152 L248 152 L248 160 L144 160Z" fill="#8c2f2a"/>
+      <path d="M156 122 L236 122 L236 129 L156 129Z" fill="#8c2f2a"/>
+      <path d="M172 100 L220 100 L220 106 L172 106Z" fill="#c9911f"/>
+      <g fill="#3a2d1e">
+        <rect x="160" y="166" width="10" height="16"/><rect x="180" y="166" width="10" height="16"/>
+        <rect x="200" y="166" width="10" height="16"/><rect x="220" y="166" width="10" height="16"/>
+        <rect x="172" y="134" width="9" height="13"/><rect x="192" y="134" width="9" height="13"/>
+        <rect x="212" y="134" width="9" height="13"/>
+      </g>
+      <path d="M196 92 L196 74" stroke="#c9911f" stroke-width="3"/>
+      <circle cx="196" cy="72" r="4" fill="#e0b13f"/>
+    </g>
+    <g stroke="#7a5a3a" stroke-width="1.5" fill="none" opacity=".8">
+      <path d="M0 232 C90 222 150 240 240 230 C310 222 350 236 400 228"/>
+    </g>
+  </symbol>
+
+  <!-- Chortens with a line of prayer flags -->
+  <symbol id="a-chorten" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+    <rect width="400" height="260" fill="url(#skyDusk)"/>
+    <path d="M0 148 L62 112 L120 142 L182 104 L244 140 L304 110 L360 142 L400 122 L400 260 L0 260Z" fill="#7d5a3b"/>
+    <path d="M0 192 L80 172 L160 194 L240 170 L320 192 L400 176 L400 260 L0 260Z" fill="#5a4028"/>
+    <g fill="#f4efe3">
+      <path d="M96 200 L96 186 L140 186 L140 200Z"/>
+      <path d="M102 186 L102 176 L134 176 L134 186Z"/>
+      <path d="M108 176 C108 162 128 162 128 176Z"/>
+      <path d="M115 162 L121 162 L121 150 L115 150Z"/>
+      <path d="M232 202 L232 184 L288 184 L288 202Z"/>
+      <path d="M240 184 L240 171 L280 171 L280 184Z"/>
+      <path d="M248 171 C248 153 272 153 272 171Z"/>
+      <path d="M257 153 L263 153 L263 138 L257 138Z"/>
+    </g>
+    <g fill="#c9911f">
+      <circle cx="118" cy="148" r="3"/><circle cx="260" cy="136" r="4"/>
+    </g>
+    <!-- prayer flag line strung between the two chortens -->
+    <path id="flagline" d="M118 146 Q190 172 260 134" stroke="#3a2d1e" stroke-width="1.6" fill="none"/>
+    <g>
+      <path d="M130 152 l9 1 -3 12z" fill="#2f6fb5"/>
+      <path d="M146 158 l9 1 -3 12z" fill="#f2f2ee"/>
+      <path d="M162 163 l9 1 -3 12z" fill="#c0392b"/>
+      <path d="M178 167 l9 1 -3 12z" fill="#1e8449"/>
+      <path d="M194 169 l9 0 -4 12z" fill="#e8a12c"/>
+      <path d="M210 167 l9 -1 -2 12z" fill="#2f6fb5"/>
+      <path d="M226 161 l9 -2 -2 12z" fill="#f2f2ee"/>
+      <path d="M242 152 l9 -2 -2 12z" fill="#c0392b"/>
+    </g>
+  </symbol>
+
+  <!-- Zanskar gorge with a river running through it -->
+  <symbol id="a-zanskar" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+    <rect width="400" height="260" fill="url(#skyDawn)"/>
+    <path d="M0 0 L0 260 L150 260 L112 180 L138 118 L96 62 L48 22 L0 0Z" fill="#7b5636"/>
+    <path d="M400 0 L400 260 L250 260 L288 176 L262 112 L306 58 L356 20 L400 0Z" fill="#6b4a2e"/>
+    <path d="M0 40 L60 30 L108 74 L150 128 L176 200 L150 260 L0 260Z" fill="#8d6845" opacity=".65"/>
+    <path d="M400 44 L340 32 L296 78 L252 130 L228 202 L252 260 L400 260Z" fill="#7d5a3a" opacity=".65"/>
+    <path d="M150 260 L176 198 L200 168 L224 198 L250 260Z" fill="#2e7f8f"/>
+    <g stroke="#bfe3e8" stroke-width="1.8" fill="none" opacity=".6">
+      <path d="M186 214 q14 6 28 0M178 234 q22 8 44 0M170 252 q30 9 60 0"/>
+    </g>
+    <path d="M200 168 L206 176 L194 176Z" fill="#d8ecef"/>
+  </symbol>
+
+  <!-- Khardung La: snow pass with hairpin road -->
+  <symbol id="a-pass" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+    <rect width="400" height="260" fill="url(#skyDay)"/>
+    <path d="M0 160 L70 84 L128 128 L186 62 L250 126 L312 80 L372 130 L400 112 L400 260 L0 260Z" fill="#8a6b4c"/>
+    <path d="M186 62 L214 92 L158 92Z" fill="#f6f4ee"/>
+    <path d="M70 84 L94 110 L46 110Z" fill="#f2efe8"/>
+    <path d="M312 80 L334 106 L290 106Z" fill="#f2efe8"/>
+    <path d="M0 180 C60 168 100 190 160 180 C220 170 260 190 320 180 C356 174 380 184 400 180 L400 260 L0 260Z" fill="#6c4d31"/>
+    <path d="M0 226 C70 216 120 236 190 226 C260 216 320 234 400 224 L400 260 L0 260Z" fill="#e8e4da"/>
+    <g stroke="#3d3427" stroke-width="4" fill="none" stroke-linecap="round">
+      <path d="M40 256 C120 248 140 222 80 214 C30 208 60 190 150 186 C230 183 250 172 206 166"/>
+    </g>
+    <g stroke="#efe7d4" stroke-width="1" stroke-dasharray="5 7" fill="none">
+      <path d="M40 256 C120 248 140 222 80 214 C30 208 60 190 150 186 C230 183 250 172 206 166"/>
+    </g>
+  </symbol>
+
+  <!-- Markha valley trek: tents under a ridge -->
+  <symbol id="a-trek" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+    <rect width="400" height="260" fill="url(#skyDusk)"/>
+    <circle cx="300" cy="56" r="16" fill="#fdf3dd" opacity=".9"/>
+    <path d="M0 136 L58 92 L118 130 L178 86 L240 128 L300 94 L358 132 L400 110 L400 260 L0 260Z" fill="#6f4f34"/>
+    <path d="M178 86 L200 112 L156 112Z" fill="#f4f1e9"/>
+    <path d="M0 184 C70 172 130 196 200 184 C270 172 330 194 400 182 L400 260 L0 260Z" fill="#4e3722"/>
+    <g>
+      <path d="M92 226 L112 196 L132 226Z" fill="#c4631a"/>
+      <path d="M112 196 L112 226" stroke="#8d4512" stroke-width="2"/>
+      <path d="M146 228 L162 204 L178 228Z" fill="#1f6f7d"/>
+      <path d="M162 204 L162 228" stroke="#14515c" stroke-width="2"/>
+    </g>
+    <g stroke="#e0b13f" stroke-width="2" fill="none" opacity=".9">
+      <path d="M206 228 l10-10M216 228 l-10-10"/>
+    </g>
+    <ellipse cx="211" cy="230" rx="13" ry="4" fill="#3a2a18"/>
+  </symbol>
+
+  <!-- Leh old town under the palace -->
+  <symbol id="a-leh" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+    <rect width="400" height="260" fill="url(#skyDawn)"/>
+    <path d="M0 148 L64 106 L124 140 L188 98 L252 138 L314 104 L372 140 L400 120 L400 260 L0 260Z" fill="#8a6745"/>
+    <g fill="#e8dcc3">
+      <path d="M168 156 L168 108 L232 92 L232 156Z"/>
+      <path d="M180 108 L180 82 L220 70 L220 108Z" fill="#efe5d0"/>
+    </g>
+    <g fill="#5a4026">
+      <rect x="176" y="120" width="8" height="12"/><rect x="192" y="118" width="8" height="12"/>
+      <rect x="208" y="116" width="8" height="12"/><rect x="220" y="114" width="8" height="12"/>
+      <rect x="188" y="88" width="7" height="10"/><rect x="204" y="84" width="7" height="10"/>
+    </g>
+    <path d="M164 156 L236 156 L236 163 L164 163Z" fill="#8c2f2a"/>
+    <path d="M0 186 L400 186 L400 260 L0 260Z" fill="#c9b08a"/>
+    <g fill="#e3d6b8" stroke="#a88f6a" stroke-width="1">
+      <rect x="18" y="196" width="52" height="42"/><rect x="82" y="204" width="44" height="34"/>
+      <rect x="138" y="198" width="58" height="40"/><rect x="208" y="206" width="46" height="32"/>
+      <rect x="266" y="196" width="56" height="42"/><rect x="334" y="204" width="48" height="34"/>
+    </g>
+    <g fill="#5a4026">
+      <rect x="32" y="210" width="9" height="12"/><rect x="50" y="210" width="9" height="12"/>
+      <rect x="96" y="216" width="8" height="11"/><rect x="152" y="212" width="9" height="12"/>
+      <rect x="174" y="212" width="9" height="12"/><rect x="222" y="218" width="8" height="11"/>
+      <rect x="280" y="210" width="9" height="12"/><rect x="300" y="210" width="9" height="12"/>
+      <rect x="348" y="216" width="8" height="11"/>
+    </g>
+  </symbol>
+
+  <!-- Wide hero panorama: lake, ridges, chorten, flags -->
+  <symbol id="a-hero" viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid slice">
+    <rect width="1200" height="460" fill="url(#skyDay)"/>
+    <circle cx="950" cy="88" r="34" fill="#fdf6e4" opacity=".9"/>
+    <circle cx="950" cy="88" r="110" fill="url(#sunGlow)"/>
+    <path d="M0 250 L120 168 L232 224 L352 148 L470 218 L590 160 L710 230 L830 166 L950 226 L1070 176 L1200 228 L1200 300 L0 300Z" fill="#a37d54"/>
+    <path d="M352 148 L392 186 L312 186Z" fill="#f5f2ea"/>
+    <path d="M590 160 L628 198 L552 198Z" fill="#f5f2ea" opacity=".95"/>
+    <path d="M830 166 L866 202 L794 202Z" fill="#f5f2ea" opacity=".9"/>
+    <path d="M0 272 L140 232 L300 276 L460 228 L620 272 L780 230 L940 274 L1100 236 L1200 266 L1200 320 L0 320Z" fill="#82603d"/>
+    <rect x="0" y="312" width="1200" height="148" fill="url(#lake)"/>
+    <g stroke="#a5dbe3" stroke-width="2.5" opacity=".4" fill="none">
+      <path d="M60 348h150M250 340h190M480 352h140M660 342h180M880 350h160M1080 344h110
+               M40 396h210M300 402h250M600 392h200M840 400h230
+               M120 440h260M420 432h220M700 442h250"/>
+    </g>
+    <path d="M0 300 L1200 300 L1200 314 L0 314Z" fill="#e6d3ae" opacity=".5"/>
+    <!-- chorten and prayer flags, foreground right — clear of the headline -->
+    <g fill="#f4efe3">
+      <path d="M1046 300 L1046 282 L1102 282 L1102 300Z"/>
+      <path d="M1054 282 L1054 268 L1094 268 L1094 282Z"/>
+      <path d="M1062 268 C1062 248 1086 248 1086 268Z"/>
+      <path d="M1071 248 L1077 248 L1077 232 L1071 232Z"/>
+    </g>
+    <circle cx="1074" cy="230" r="5" fill="#c9911f"/>
+    <path d="M1074 236 Q900 296 730 244" stroke="#2f2618" stroke-width="2" fill="none"/>
+    <g>
+      <path d="M1042 254 l-12 3 4 17z" fill="#2f6fb5"/>
+      <path d="M1008 266 l-12 3 4 17z" fill="#f2f2ee"/>
+      <path d="M974 276 l-12 3 4 17z" fill="#c0392b"/>
+      <path d="M940 283 l-12 2 4 17z" fill="#1e8449"/>
+      <path d="M906 288 l-12 1 4 17z" fill="#e8a12c"/>
+      <path d="M872 290 l-12 0 4 17z" fill="#2f6fb5"/>
+      <path d="M838 289 l-12 -1 3 17z" fill="#f2f2ee"/>
+      <path d="M804 284 l-12 -2 3 17z" fill="#c0392b"/>
+      <path d="M770 276 l-12 -3 3 17z" fill="#1e8449"/>
+    </g>
+  </symbol>
+</svg>
+
+<!-- ================================ chrome ============================== -->
+<div class="flagstrip" aria-hidden="true">
+  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+</div>
+
+<div class="demobar">
+  <div class="wrap">
+    <span><b>Demo mock-up.</b> Company name, prices, reviews and artwork are samples — your real name, text and photographs drop straight in.</span>
+    <span>Every page and link below works. Nothing here sends an email yet.</span>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#home">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="22" fill="#1f3a5f"/>
+        <path d="M8 32 L18 20 L25 27 L33 15 L40 24 L40 34 L8 34Z" fill="#e8dcc3"/>
+        <path d="M33 15 L37 21 L29 21Z" fill="#fff"/>
+        <rect x="8" y="34" width="32" height="6" fill="#1b7c89"/>
+      </svg>
+      <span>
+        <span class="bn">Ladakh Journeys</span>
+        <span class="bt">Leh &middot; Ladakh</span>
+      </span>
+    </a>
+
+    <nav class="main" id="nav">
+      <a href="#home">Home</a>
+      <a href="#places">Places To Visit</a>
+      <a href="#tours">Tours</a>
+      <a href="#trekking">Trekking</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#contact">Contact Us</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ================================= HOME =============================== -->
+<div class="page" id="page-home">
+  <div class="hero">
+    <svg class="art" aria-label="Pangong Tso under bare ridges, with a chorten and prayer flags"><use href="#a-hero"/></svg>
+    <div class="cap">
+      <div class="wrap">
+        <h1>Ladakh, at the pace it deserves.</h1>
+        <p>Local guides, small groups, and trips shaped around what you actually
+           want to see — not a fixed coach route.</p>
+        <div class="row">
+          <a class="btn" href="#tours">See our tours</a>
+          <a class="btn ghost" href="#contact" style="color:#fff;border-color:#fff">Plan a custom trip</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="split">
+        <div>
+          <span class="mono-label">Who we are</span>
+          <h2 style="margin:8px 0 14px">A Leh-based team, run by Ladakhis</h2>
+          <p>We organise sightseeing tours, jeep safaris, treks and climbs across
+             Ladakh, with camping or homestays depending on the route. Because we
+             work with local families and local drivers, the money from your trip
+             stays in the valley it was spent in.</p>
+          <ul class="ticks">
+            <li>Every itinerary can be customised — dates, pace, route, budget</li>
+            <li>Drivers and guides born and living in Ladakh</li>
+            <li>Inner Line Permits arranged for you before you land</li>
+            <li>Acclimatisation built into day one, not skipped</li>
+          </ul>
+          <a class="btn" href="#contact">Ask us a question</a>
+        </div>
+        <div class="art-box">
+          <svg aria-label="Hilltop monastery above a Ladakhi village"><use href="#a-gompa"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band sunk">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="mono-label">Popular right now</span>
+        <h2>Three ways people start</h2>
+      </div>
+      <div class="grid g3">
+        <article class="card">
+          <svg class="art" aria-label="Pangong Tso"><use href="#a-pangong"/></svg>
+          <div class="body">
+            <div class="meta">5 days &middot; jeep safari</div>
+            <h3>Pangong &amp; Tso Moriri</h3>
+            <p>Both high lakes in one loop, with a night at each and the Chang La
+               crossing in between.</p>
+            <div class="foot">
+              <span class="price"><small>from / person</small>&#8377;24,500</span>
+              <a class="btn ghost" href="#tours">Details</a>
+            </div>
+          </div>
+        </article>
+        <article class="card">
+          <svg class="art" aria-label="Nubra Valley dunes"><use href="#a-nubra"/></svg>
+          <div class="body">
+            <div class="meta">3 days &middot; jeep safari</div>
+            <h3>Nubra Valley &amp; Hunder</h3>
+            <p>Over Khardung La to the sand dunes, the double-humped camels and
+               Diskit monastery.</p>
+            <div class="foot">
+              <span class="price"><small>from / person</small>&#8377;15,800</span>
+              <a class="btn ghost" href="#tours">Details</a>
+            </div>
+          </div>
+        </article>
+        <article class="card">
+          <svg class="art" aria-label="Trekking camp in the Markha valley"><use href="#a-trek"/></svg>
+          <div class="body">
+            <div class="meta">6 days &middot; trek</div>
+            <h3>Markha Valley Trek</h3>
+            <p>The classic Ladakh trek — homestays, two passes and the Hemis
+               national park.</p>
+            <div class="foot">
+              <span class="price"><small>from / person</small>&#8377;32,000</span>
+              <a class="btn ghost" href="#trekking">Details</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap" style="text-align:center">
+      <h2>Not sure what fits?</h2>
+      <p style="color:var(--ink-3); max-width:52ch; margin:12px auto 22px">
+        Tell us roughly how many days you have and what you want out of them, and
+        we will send back two or three options with real prices.
+      </p>
+      <a class="btn" href="#contact">Send an enquiry</a>
+    </div>
+  </section>
+</div>
+
+<!-- ================================ PLACES ============================== -->
+<div class="page" id="page-places">
+  <section class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="mono-label">Places to visit</span>
+        <h2>What there is to see</h2>
+        <p>Ladakh is bigger and emptier than most people expect. These are the
+           places worth the drive, and roughly what each one costs you in time.</p>
+      </div>
+
+      <div class="grid g3">
+        <article class="card">
+          <svg class="art" aria-label="Pangong Tso"><use href="#a-pangong"/></svg>
+          <div class="body">
+            <div class="meta">2 days from Leh</div>
+            <h3>Pangong Tso</h3>
+            <p>134km of lake at 4,350m, two-thirds of it in Tibet. The colour
+               changes hour to hour. Stay the night — day trips waste it.</p>
+          </div>
+        </article>
+        <article class="card">
+          <svg class="art" aria-label="Nubra dunes"><use href="#a-nubra"/></svg>
+          <div class="body">
+            <div class="meta">2–3 days from Leh</div>
+            <h3>Nubra Valley</h3>
+            <p>Cold desert with real sand dunes at Hunder, the Shyok river, and
+               Diskit's 32m Maitreya looking north.</p>
+          </div>
+        </article>
+        <article class="card">
+          <svg class="art" aria-label="Thiksey monastery"><use href="#a-gompa"/></svg>
+          <div class="body">
+            <div class="meta">Half day</div>
+            <h3>Thiksey &amp; Hemis</h3>
+            <p>Twelve storeys of white-and-ochre monastery above the Indus.
+               Morning prayers at Thiksey start before sunrise — worth the alarm.</p>
+          </div>
+        </article>
+        <article class="card">
+          <svg class="art" aria-label="Khardung La pass"><use href="#a-pass"/></svg>
+          <div class="body">
+            <div class="meta">Half day</div>
+            <h3>Khardung La</h3>
+            <p>5,359m and one of the highest motorable passes anywhere. Ten
+               minutes at the top is plenty on your first days.</p>
+          </div>
+        </article>
+        <article class="card">
+          <svg class="art" aria-label="Zanskar gorge"><use href="#a-zanskar"/></svg>
+          <div class="body">
+            <div class="meta">4–7 days</div>
+            <h3>Zanskar Valley</h3>
+            <p>Cut off by snow half the year. Rafting on the Zanskar in summer,
+               and the frozen river walk in January.</p>
+          </div>
+        </article>
+        <article class="card">
+          <svg class="art" aria-label="Leh old town"><use href="#a-leh"/></svg>
+          <div class="body">
+            <div class="meta">1–2 days</div>
+            <h3>Leh old town</h3>
+            <p>Nine-storey palace, the bazaar, Shanti Stupa at sunset, and the
+               two days of acclimatising you should not skip.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================= TOURS ============================== -->
+<div class="page" id="page-tours">
+  <section class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="mono-label">Tours</span>
+        <h2>Our set itineraries</h2>
+        <p>Prices are per person, sharing a twin room, with a vehicle, driver,
+           permits and stays included. Any of these can be shortened, extended or
+           rebuilt around your dates.</p>
+      </div>
+
+      <div class="grid g2">
+        <article class="card">
+          <svg class="art" aria-label="Leh old town"><use href="#a-leh"/></svg>
+          <div class="body">
+            <div class="meta">1 day &middot; easy &middot; all year</div>
+            <h3>Leh &amp; Indus Valley day tour</h3>
+            <p>Shey, Thiksey and Hemis in the morning, Sangam and the Magnetic
+               Hill after lunch, Shanti Stupa for sunset. A good first full day
+               while you are still acclimatising.</p>
+            <div class="foot">
+              <span class="price"><small>from / person</small>&#8377;3,200</span>
+              <a class="btn" href="#contact">Enquire</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <svg class="art" aria-label="Nubra dunes"><use href="#a-nubra"/></svg>
+          <div class="body">
+            <div class="meta">3 days / 2 nights &middot; easy &middot; May–Sep</div>
+            <h3>Nubra Valley jeep safari</h3>
+            <p>Khardung La, Diskit monastery, the Hunder dunes and a camel ride,
+               then Turtuk on the third morning — the last village before the
+               line of control.</p>
+            <div class="foot">
+              <span class="price"><small>from / person</small>&#8377;15,800</span>
+              <a class="btn" href="#contact">Enquire</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <svg class="art" aria-label="Pangong Tso"><use href="#a-pangong"/></svg>
+          <div class="body">
+            <div class="meta">5 days / 4 nights &middot; easy &middot; Jun–Sep</div>
+            <h3>Pangong &amp; Tso Moriri loop</h3>
+            <p>Chang La to Pangong for the first night, down the Chushul road to
+               Tso Moriri for the second, back through the Tso Kar basin and the
+               Taglang La.</p>
+            <div class="foot">
+              <span class="price"><small>from / person</small>&#8377;24,500</span>
+              <a class="btn" href="#contact">Enquire</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <svg class="art" aria-label="Khardung La"><use href="#a-pass"/></svg>
+          <div class="body">
+            <div class="meta">8 days / 7 nights &middot; moderate &middot; Jun–Sep</div>
+            <h3>Ladakh complete</h3>
+            <p>Everything in one run: two acclimatising days in Leh, Nubra,
+               Pangong, Tso Moriri and the Indus monasteries, with a rest day
+               built in rather than bolted on.</p>
+            <div class="foot">
+              <span class="price"><small>from / person</small>&#8377;46,900</span>
+              <a class="btn" href="#contact">Enquire</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <svg class="art" aria-label="Zanskar river"><use href="#a-zanskar"/></svg>
+          <div class="body">
+            <div class="meta">Half day &middot; easy &middot; Jun–Aug</div>
+            <h3>Zanskar river rafting</h3>
+            <p>Chilling to Nimmu on the Zanskar, grade II–III depending on the
+               month. No experience needed and all safety kit provided.</p>
+            <div class="foot">
+              <span class="price"><small>from / person</small>&#8377;2,400</span>
+              <a class="btn" href="#contact">Enquire</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <svg class="art" aria-label="Chortens and prayer flags"><use href="#a-chorten"/></svg>
+          <div class="body">
+            <div class="meta">Your dates &middot; any length</div>
+            <h3>Custom trip</h3>
+            <p>Tell us the days you have and what matters to you — monasteries,
+               high passes, walking, photography, family pace — and we will build
+               it and price it properly.</p>
+            <div class="foot">
+              <span class="price"><small>quoted</small>On request</span>
+              <a class="btn" href="#contact">Start planning</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- =============================== TREKKING ============================= -->
+<div class="page" id="page-trekking">
+  <section class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="mono-label">Trekking</span>
+        <h2>Walking routes</h2>
+        <p>All treks go out with a local guide and either homestays or full camp
+           support. Grades below assume you are reasonably fit and have had two
+           days to acclimatise in Leh first.</p>
+      </div>
+
+      <div class="tbl-wrap" style="margin-bottom:26px">
+        <table>
+          <thead>
+            <tr><th>Trek</th><th>Days</th><th>Max altitude</th><th>Season</th><th>Grade</th><th>From</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Sham Valley</strong><br><span style="color:var(--ink-3);font-size:.88rem">Likir to Temisgam, homestays</span></td>
+              <td>3</td><td>3,750&nbsp;m</td><td>Apr–Oct</td>
+              <td><span class="tag easy">Easy</span></td><td>&#8377;14,500</td>
+            </tr>
+            <tr>
+              <td><strong>Markha Valley</strong><br><span style="color:var(--ink-3);font-size:.88rem">Ganda La and Kongmaru La</span></td>
+              <td>6</td><td>5,150&nbsp;m</td><td>Jun–Sep</td>
+              <td><span class="tag mod">Moderate</span></td><td>&#8377;32,000</td>
+            </tr>
+            <tr>
+              <td><strong>Tso Moriri to Tso Kar</strong><br><span style="color:var(--ink-3);font-size:.88rem">Rupshu plateau, full camp</span></td>
+              <td>7</td><td>5,400&nbsp;m</td><td>Jul–Sep</td>
+              <td><span class="tag mod">Moderate</span></td><td>&#8377;41,000</td>
+            </tr>
+            <tr>
+              <td><strong>Chadar (frozen Zanskar)</strong><br><span style="color:var(--ink-3);font-size:.88rem">Walking on the river ice</span></td>
+              <td>8</td><td>3,390&nbsp;m</td><td>Jan–Feb only</td>
+              <td><span class="tag hard">Strenuous</span></td><td>&#8377;58,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="split">
+        <div class="art-box">
+          <svg aria-label="Tents pitched below a ridge on a trek"><use href="#a-trek"/></svg>
+        </div>
+        <div>
+          <h3 style="margin-bottom:10px">What we carry, what you carry</h3>
+          <p>On homestay routes you carry a daypack and nothing else. On camping
+             routes, ponies carry the tents, kitchen and your main bag; you walk
+             with water, layers and a camera.</p>
+          <ul class="ticks">
+            <li>Guide, cook and pony support on all camping treks</li>
+            <li>Two-person tents, mats, mess tent and toilet tent</li>
+            <li>All meals on trek, hot drinks morning and evening</li>
+            <li>First aid and a pulse oximeter with every group</li>
+          </ul>
+          <p style="color:var(--ink-3); font-size:.93rem">
+            Travel insurance covering trekking to your route's maximum altitude is
+            a condition of joining. We will tell you the figure to insure for.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- =============================== GALLERY ============================== -->
+<div class="page" id="page-gallery">
+  <section class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="mono-label">Gallery</span>
+        <h2>Recent trips</h2>
+        <p>Placeholder artwork below — this is where your own photographs go, and
+           they will carry the site more than anything else on it.</p>
+      </div>
+      <div class="gal">
+        <figure><svg aria-label="Pangong Tso"><use href="#a-pangong"/></svg><figcaption>Pangong Tso, first light</figcaption></figure>
+        <figure><svg aria-label="Hunder dunes"><use href="#a-nubra"/></svg><figcaption>Camel train at Hunder</figcaption></figure>
+        <figure><svg aria-label="Monastery"><use href="#a-gompa"/></svg><figcaption>Thiksey from the road</figcaption></figure>
+        <figure><svg aria-label="Chortens"><use href="#a-chorten"/></svg><figcaption>Chortens above the Indus</figcaption></figure>
+        <figure><svg aria-label="Khardung La"><use href="#a-pass"/></svg><figcaption>The climb to Khardung La</figcaption></figure>
+        <figure><svg aria-label="Zanskar"><use href="#a-zanskar"/></svg><figcaption>Zanskar gorge in July</figcaption></figure>
+        <figure><svg aria-label="Trek camp"><use href="#a-trek"/></svg><figcaption>Camp below Ganda La</figcaption></figure>
+        <figure><svg aria-label="Leh"><use href="#a-leh"/></svg><figcaption>Leh old town and the palace</figcaption></figure>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- =============================== REVIEWS ============================== -->
+<div class="page" id="page-reviews">
+  <section class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="mono-label">Reviews</span>
+        <h2>What people said afterwards</h2>
+        <p>Sample text for the mock-up. Your real reviews would go here, and can
+           be pulled straight from Google or TripAdvisor if you have them there.</p>
+      </div>
+      <div class="grid g2">
+        <div class="quote">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>&ldquo;We asked to slow the Nubra trip down because of my mother's
+             knees and they rebuilt the whole thing in a day. The driver stopped
+             everywhere we pointed.&rdquo;</p>
+          <div class="who">Meera S.</div><div class="where">Pune, September</div>
+        </div>
+        <div class="quote">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>&ldquo;Markha Valley with homestays rather than tents was the right
+             call. Six days and we ate better than we do at home.&rdquo;</p>
+          <div class="who">Tom &amp; Rachel</div><div class="where">Manchester, July</div>
+        </div>
+        <div class="quote">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>&ldquo;Permits were sorted before we landed, which I gather is not
+             always the case. Pangong at sunrise was worth the 4am start.&rdquo;</p>
+          <div class="who">Arjun K.</div><div class="where">Bengaluru, August</div>
+        </div>
+        <div class="quote">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>&ldquo;They talked us out of Khardung La on day one and into a rest
+             day instead. Annoying at the time, correct in hindsight.&rdquo;</p>
+          <div class="who">Sophie L.</div><div class="where">Lyon, June</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- =============================== CONTACT ============================== -->
+<div class="page" id="page-contact">
+  <section class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="mono-label">Contact us</span>
+        <h2>Tell us what you have in mind</h2>
+        <p>Rough dates and a rough idea is enough to start. We answer within a
+           day, usually sooner.</p>
+      </div>
+
+      <div class="contact-grid">
+        <form id="enq" novalidate>
+          <div class="field">
+            <label for="f-name">Your name</label>
+            <input type="text" id="f-name" name="name" required>
+          </div>
+          <div class="two">
+            <div class="field">
+              <label for="f-email">Email</label>
+              <input type="email" id="f-email" name="email" required>
+            </div>
+            <div class="field">
+              <label for="f-phone">Phone / WhatsApp</label>
+              <input type="tel" id="f-phone" name="phone">
+            </div>
+          </div>
+          <div class="two">
+            <div class="field">
+              <label for="f-trip">Interested in</label>
+              <select id="f-trip" name="trip">
+                <option>Not sure yet — advise me</option>
+                <option>Leh &amp; Indus Valley day tour</option>
+                <option>Nubra Valley jeep safari</option>
+                <option>Pangong &amp; Tso Moriri loop</option>
+                <option>Ladakh complete, 8 days</option>
+                <option>Trekking</option>
+                <option>Custom trip</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-when">Roughly when</label>
+              <input type="text" id="f-when" name="when" placeholder="e.g. second half of June">
+            </div>
+          </div>
+          <div class="two">
+            <div class="field">
+              <label for="f-people">How many people</label>
+              <input type="number" id="f-people" name="people" min="1" max="30" value="2">
+            </div>
+            <div class="field">
+              <label for="f-days">Days available</label>
+              <input type="number" id="f-days" name="days" min="1" max="30" value="7">
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-msg">Anything else we should know</label>
+            <textarea id="f-msg" name="message" rows="4" placeholder="Fitness, children, dietary needs, things you definitely want to see…"></textarea>
+          </div>
+          <button class="btn" type="submit">Send enquiry</button>
+          <div class="sent" id="sent"></div>
+        </form>
+
+        <aside>
+          <div class="infobox">
+            <dl>
+              <dt>Office</dt>
+              <dd>Main Bazaar Road, Leh<br>Ladakh 194101, India</dd>
+              <dt>Phone</dt>
+              <dd>+91 00000 00000</dd>
+              <dt>WhatsApp</dt>
+              <dd>+91 00000 00000</dd>
+              <dt>Season</dt>
+              <dd>Open all year. Road access May to October;<br>winter trips by air into Leh.</dd>
+            </dl>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px">
+              <a class="btn wa" href="#contact">WhatsApp us</a>
+              <a class="btn ghost" href="#contact">Call the office</a>
+            </div>
+            <p style="font-size:.85rem; color:var(--ink-3); margin:16px 0 0">
+              Phone numbers and address above are placeholders for the mock-up.
+            </p>
+          </div>
+
+          <div class="infobox" style="margin-top:18px">
+            <h3 style="margin-bottom:8px">Before you book anything</h3>
+            <p style="font-size:.93rem; color:var(--ink-3); margin:0">
+              Leh sits at 3,500m. Fly in and do nothing for two days — no passes,
+              no lakes, no walking uphill. Every itinerary we send you has that
+              built in, and we will argue with you about it if you try to cut it.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="fg">
+      <div>
+        <h4>Ladakh Journeys</h4>
+        <p style="font-size:.92rem; color:#b6a993; max-width:34ch">
+          Sightseeing, jeep safaris and treks across Ladakh, run by a local team
+          based in Leh.
+        </p>
+      </div>
+      <div>
+        <h4>Tours</h4>
+        <ul>
+          <li><a href="#tours">Day tours from Leh</a></li>
+          <li><a href="#tours">Nubra Valley</a></li>
+          <li><a href="#tours">Pangong &amp; Tso Moriri</a></li>
+          <li><a href="#tours">Custom trips</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Trekking</h4>
+        <ul>
+          <li><a href="#trekking">Sham Valley</a></li>
+          <li><a href="#trekking">Markha Valley</a></li>
+          <li><a href="#trekking">Tso Moriri to Tso Kar</a></li>
+          <li><a href="#trekking">Chadar</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>More</h4>
+        <ul>
+          <li><a href="#places">Places to visit</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+          <li><a href="#contact">Contact us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="base">
+      <span>Demonstration mock-up &mdash; not a live business.</span>
+      <span>All text, prices and artwork are samples.</span>
+    </div>
+  </div>
+  <div class="flagstrip" aria-hidden="true">
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+  </div>
+</footer>
+
+<script>
+/* Page switching. Everything is one file, so "pages" are sections that show
+   and hide from the address bar hash — which means the browser back button,
+   bookmarks and direct links all still work. */
+(function () {
+  'use strict';
+
+  var PAGES = ['home', 'places', 'tours', 'trekking', 'gallery', 'reviews', 'contact'];
+
+  function show(name) {
+    if (PAGES.indexOf(name) === -1) name = 'home';
+
+    PAGES.forEach(function (p) {
+      var el = document.getElementById('page-' + p);
+      if (el) el.classList.toggle('on', p === name);
+    });
+
+    var links = document.querySelectorAll('#nav a');
+    for (var i = 0; i < links.length; i++) {
+      links[i].classList.toggle('on', links[i].getAttribute('href') === '#' + name);
+    }
+
+    document.title = (name === 'home' ? '' : cap(name) + ' — ') + 'Ladakh Journeys — sample tour website';
+  }
+
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  function current() { return (location.hash || '#home').replace('#', ''); }
+
+  window.addEventListener('hashchange', function () {
+    show(current());
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  show(current());
+
+  /* The enquiry form has nowhere to send to in a mock-up, so it says so
+     plainly rather than pretending to have sent something. */
+  var form = document.getElementById('enq');
+  var out = document.getElementById('sent');
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+
+    var name = form.name.value.trim();
+    var email = form.email.value.trim();
+    var bad = [];
+    if (name.length < 2) bad.push('your name');
+    if (!/^[^@\s]+@[^@\s.]+\.[^@\s]{2,}$/.test(email)) bad.push('a valid email address');
+
+    if (bad.length) {
+      out.className = 'sent show';
+      out.style.background = '#f7e5e1';
+      out.style.borderColor = '#d9a79e';
+      out.style.color = '#8b2f22';
+      out.textContent = 'Please add ' + bad.join(' and ') + '.';
+      return;
+    }
+
+    out.className = 'sent show';
+    out.style.background = '#e4efe6';
+    out.style.borderColor = '#a9ccb2';
+    out.style.color = '#1c5f36';
+    out.textContent = 'That is the form working, ' + name + '. On the real site this ' +
+      'would land in your inbox and on WhatsApp within seconds, with everything you ' +
+      'filled in. Nothing has been sent from this demo file.';
+    out.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  });
+})();
+</script>
+</body>
+</html>
