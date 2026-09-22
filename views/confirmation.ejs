@@ -1,0 +1,86 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="wrap section">
+    <div class="stub">
+      <div class="stub__top">
+        <div class="notice notice--good noprint" style="margin-bottom:1.5rem">
+          <span class="notice__i">✓</span>
+          <p>
+            <% if (booking.status === 'confirmed') { %>
+              Seats confirmed and paid. A copy of this page has your reference on it —
+              in production this also goes out by email immediately.
+            <% } else { %>
+              Booking recorded and awaiting payment confirmation from the gateway.
+              Your seats are reserved while that settles.
+            <% } %>
+          </p>
+        </div>
+
+        <span class="label">Booking reference</span>
+        <span class="stub__ref"><%= booking.reference %></span>
+
+        <h1 class="stub__title"><%= tour.title %></h1>
+        <p class="mono-sm" style="margin:0"><%= tour.destination %>, <%= tour.country %> · <%= fmt.nights(tour.duration_days) %></p>
+      </div>
+
+      <div class="stub__perf"></div>
+
+      <div class="stub__bot">
+        <dl class="rows">
+          <div class="rows__r"><dt>Departs</dt><dd><%= fmt.longDate(dep.depart_on) %></dd></div>
+          <div class="rows__r"><dt>Returns</dt><dd><%= fmt.longDate(dep.return_on) %></dd></div>
+          <div class="rows__r"><dt>Travellers</dt><dd><%= booking.seats %></dd></div>
+          <div class="rows__r"><dt>Lead traveller</dt><dd style="font-family:var(--body)"><%= booking.lead_name %></dd></div>
+          <div class="rows__r"><dt>Confirmation sent to</dt><dd style="font-family:var(--body)"><%= booking.lead_email %></dd></div>
+          <div class="rows__r"><dt>Trip total</dt><dd><%= fmt.money(booking.amount_total, booking.currency) %></dd></div>
+          <div class="rows__r"><dt>Paid today</dt><dd><%= fmt.money(booking.amount_due_now, booking.currency) %></dd></div>
+          <% if (booking.amount_total > booking.amount_due_now) { %>
+            <div class="rows__r">
+              <dt>Balance outstanding</dt>
+              <dd><%= fmt.money(booking.amount_total - booking.amount_due_now, booking.currency) %></dd>
+            </div>
+          <% } %>
+          <div class="rows__r rows__r--total">
+            <dt class="rows__k">Status</dt>
+            <dd class="rows__v" style="text-transform:uppercase; font-size:0.8rem; letter-spacing:0.1em"><%= booking.status %></dd>
+          </div>
+        </dl>
+
+        <% if (travellers.length) { %>
+          <h4 style="margin:1.5rem 0 0.6rem">Party</h4>
+          <ul class="tick-list">
+            <li><%= booking.lead_name %> — lead</li>
+            <% travellers.forEach(function (t) { %><li><%= t.full_name %></li><% }); %>
+          </ul>
+        <% } %>
+
+        <% if (booking.notes) { %>
+          <h4 style="margin:1.5rem 0 0.4rem">Your notes to us</h4>
+          <p class="muted" style="font-size:0.92rem"><%= booking.notes %></p>
+        <% } %>
+
+        <h4 style="margin:1.75rem 0 0.6rem">What happens next</h4>
+        <ol class="muted" style="font-size:0.92rem; padding-left:1.2rem; max-width:52ch">
+          <li>Joining instructions and a kit list arrive by email within one working day.</li>
+          <% if (booking.amount_total > booking.amount_due_now) { %>
+            <li>We email a balance reminder 74 days before departure; the balance is due at 60 days.</li>
+          <% } %>
+          <li>Final documents — meeting point, guide contact, local emergency numbers — go out 14 days before you leave.</li>
+        </ol>
+
+        <div class="noprint" style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.75rem">
+          <button class="btn btn--ink" type="button" onclick="window.print()">Print this page</button>
+          <a class="btn btn--ghost" href="/tours">Browse more tours</a>
+        </div>
+      </div>
+    </div>
+
+    <p class="center mono-sm noprint" style="margin-top:1.5rem">
+      Keep reference <%= booking.reference %> — it is how we find you on the phone.
+    </p>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

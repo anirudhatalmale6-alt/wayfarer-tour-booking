@@ -1,0 +1,97 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <section class="section" style="padding-bottom:0">
+    <div class="wrap">
+      <span class="kicker">The whole catalogue</span>
+      <h1 style="margin:0.75rem 0 1rem">All tours</h1>
+      <p class="lede">
+        Filter by category, length or the month you can actually get away. Only
+        departures with seats left count towards the month filter — an empty
+        result means empty, not hidden.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <form class="filters" method="get" action="/tours">
+        <div class="field" style="flex:1 1 220px">
+          <label class="label" for="f-q">Search</label>
+          <input type="text" id="f-q" name="q" value="<%= filters.q %>" placeholder="Kyoto, Douro, trek…">
+        </div>
+
+        <div class="field" style="flex:0 1 170px">
+          <label class="label" for="f-cat">Category</label>
+          <select id="f-cat" name="category">
+            <option value="">Any</option>
+            <% categories.forEach(function (c) { %>
+              <option value="<%= c.id %>" <%= filters.category === c.id ? 'selected' : '' %>><%= c.label %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div class="field" style="flex:0 1 170px">
+          <label class="label" for="f-dur">Length</label>
+          <select id="f-dur" name="duration">
+            <option value="">Any</option>
+            <option value="short"  <%= filters.duration === 'short'  ? 'selected' : '' %>>Up to 6 days</option>
+            <option value="medium" <%= filters.duration === 'medium' ? 'selected' : '' %>>7 to 9 days</option>
+            <option value="long"   <%= filters.duration === 'long'   ? 'selected' : '' %>>10 days or more</option>
+          </select>
+        </div>
+
+        <div class="field" style="flex:0 1 190px">
+          <label class="label" for="f-month">Departing in</label>
+          <select id="f-month" name="month">
+            <option value="">Any month</option>
+            <% months.forEach(function (m) { %>
+              <option value="<%= m %>" <%= filters.month === m ? 'selected' : '' %>><%= fmt.monthLabel(m) %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div class="field" style="flex:0 0 auto">
+          <span class="label">&nbsp;</span>
+          <label class="check">
+            <input type="checkbox" name="available" value="1" <%= filters.available === '1' ? 'checked' : '' %>>
+            Seats left only
+          </label>
+        </div>
+
+        <div class="field" style="flex:0 0 auto">
+          <span class="label">&nbsp;</span>
+          <div style="display:flex; gap:0.5rem">
+            <button class="btn btn--sm" type="submit">Apply</button>
+            <a class="btn btn--ghost btn--sm" href="/tours">Clear</a>
+          </div>
+        </div>
+      </form>
+
+      <p class="mono-sm" style="margin-bottom:1.5rem">
+        <%= tours.length %> tour<%= tours.length === 1 ? '' : 's' %>
+        <% if (filters.month) { %> departing in <%= fmt.monthLabel(filters.month) %><% } %>
+        <% if (filters.category) { %> · <%= filters.category %><% } %>
+      </p>
+
+      <% if (!tours.length) { %>
+        <div class="notice notice--info">
+          <span class="notice__i">[ ]</span>
+          <p>
+            Nothing matches that combination. Try widening the month, or
+            <a href="/tours">clear the filters</a> and start again.
+          </p>
+        </div>
+      <% } else { %>
+        <div class="grid-tours">
+          <% tours.forEach(function (tour, idx) { %>
+            <%- include('partials/tourcard', { tour: tour, i: idx % 8 }) %>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

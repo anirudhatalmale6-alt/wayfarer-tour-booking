@@ -1,0 +1,22 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <section class="section">
+    <div class="wrap center">
+      <span class="kicker" style="justify-content:center">Hold released</span>
+      <h1 style="margin:1rem auto 1rem; max-width:24ch">Those seats went back to the pool</h1>
+      <p class="lede" style="margin-inline:auto">
+        Checkout windows last <%= holdMinutes %> minutes so seats cannot sit locked up
+        by an abandoned tab. Nothing was charged. Pick your dates again and you will be
+        straight back here.
+      </p>
+      <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap; margin-top:2rem">
+        <a class="btn" href="/tours">Choose dates again</a>
+        <a class="btn btn--ghost" href="/how-it-works#holds">Why holds expire</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

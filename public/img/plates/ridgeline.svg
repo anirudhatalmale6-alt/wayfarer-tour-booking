@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img">
+  <defs>
+    <linearGradient id="sky-ridgeline" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2B3A4A"/>
+      <stop offset="55%" stop-color="#7C8FA0"/>
+      <stop offset="100%" stop-color="#E4C79A"/>
+    </linearGradient>
+    <radialGradient id="glow-ridgeline">
+      <stop offset="0%" stop-color="#F3E3C3" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#F3E3C3" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="grain-ridgeline" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" seed="7" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.10"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky-ridgeline)"/>
+  
+  <circle cx="888" cy="240" r="74" fill="#F3E3C3" filter="url(#soft)" opacity="0.95"/><circle cx="888" cy="240" r="192.4" fill="url(#glow-ridgeline)" opacity="0.5"/>
+  <path d="M 0 544 L -101.86 487.34 L 0 332.77 L 154.43 485.61 L 240 293.98 L 386.9 475.15 L 480 367.18 L 622.74 487.41 L 720 383.9 L 869.3 493.93 L 960 306.54 L 1073.78 485.55 L 1200 341.95 L 1200 544 L 1200 800 L 0 800 Z" fill="#5C7186" opacity="0.9"/>
+  <path d="M 0 617.6 L -95.88 562.85 L 0 397.99 L 80.38 561.39 L 171.43 396.63 L 266.35 574.84 L 342.86 381.37 L 463.29 563.64 L 514.29 447.31 L 614.84 558.49 L 685.71 408.05 L 800.39 574.72 L 857.14 431.09 L 943 570.18 L 1028.57 416.57 L 1146.79 560.02 L 1200 384.62 L 1200 617.6 L 1200 800 L 0 800 Z" fill="#3C4E60" opacity="1"/>
+  <path d=" M -53.8 688 L -35.29 586.2 L -16.78 688 Z M -13.24 688 L 4.1 562.37 L 21.43 688 Z M 13.86 688 L 26.9 612.92 L 39.95 688 Z M 42.81 688 L 61.44 633.05 L 80.06 688 Z M 90.88 688 L 108.92 574.27 L 126.96 688 Z M 111.7 688 L 134.43 615.72 L 157.16 688 Z M 164.22 688 L 179.73 574.35 L 195.25 688 Z M 190.09 688 L 204.61 634.64 L 219.13 688 Z M 234.37 688 L 247.56 634.02 L 260.76 688 Z M 262.12 688 L 278.82 589.23 L 295.52 688 Z M 310.26 688 L 322.92 604.37 L 335.59 688 Z M 343.61 688 L 361.11 614.24 L 378.62 688 Z M 380.4 688 L 396.62 592.43 L 412.83 688 Z M 412.34 688 L 429.13 573.95 L 445.91 688 Z M 428.93 688 L 450.54 616.11 L 472.14 688 Z M 478.74 688 L 494.68 630.98 L 510.62 688 Z M 509.67 688 L 526.84 577.9 L 544.01 688 Z M 541.44 688 L 563.39 635.72 L 585.34 688 Z M 581.91 688 L 599.41 555.31 L 616.91 688 Z M 614.98 688 L 631.26 604.18 L 647.54 688 Z M 656.04 688 L 675.14 597.93 L 694.24 688 Z M 695.17 688 L 714.98 599.97 L 734.79 688 Z M 732.21 688 L 746.61 560.72 L 761 688 Z M 762.38 688 L 782.34 607.04 L 802.3 688 Z M 807.05 688 L 820.22 593.7 L 833.4 688 Z M 831.45 688 L 850.13 630.82 L 868.8 688 Z M 862.18 688 L 875.26 603.52 L 888.35 688 Z M 911.42 688 L 925.65 635.17 L 939.87 688 Z M 928.14 688 L 950.65 592.41 L 973.16 688 Z M 966.15 688 L 981.05 570.72 L 995.94 688 Z M 1008.96 688 L 1021.82 600.4 L 1034.69 688 Z M 1036.26 688 L 1055.55 567.23 L 1074.84 688 Z M 1080.7 688 L 1101.52 559.73 L 1122.34 688 Z M 1124.36 688 L 1137.28 627.62 L 1150.19 688 Z M 1152.85 688 L 1174.69 555.28 L 1196.53 688 Z M 1174.66 688 L 1192.15 605.22 L 1209.65 688 Z M 1221.04 688 L 1234.93 630.65 L 1248.83 688 Z M 0 687 L 1200 687 L 1200 800 L 0 800 Z" fill="#1E2A33" opacity="1"/>
+  
+  <rect width="1200" height="800" filter="url(#grain-ridgeline)" opacity="0.5" style="mix-blend-mode:overlay"/>
+</svg>

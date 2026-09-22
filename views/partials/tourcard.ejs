@@ -1,0 +1,29 @@
+<a class="tcard rise" style="--i: <%= typeof i !== 'undefined' ? i : 0 %>" href="/tours/<%= tour.slug %>">
+  <div class="tcard__plate">
+    <img src="/static/img/plates/<%= tour.plate %>" alt="Illustrated plate for <%= tour.title %>" loading="lazy" width="1200" height="800">
+    <span class="tcard__cat"><%= tour.category %></span>
+  </div>
+  <div class="tcard__body">
+    <div class="tcard__meta">
+      <span class="label"><%= tour.destination %>, <%= tour.country %></span>
+      <span class="label"><%= fmt.nights(tour.duration_days) %></span>
+    </div>
+    <h3><%= tour.title %></h3>
+    <p class="tcard__sum"><%= tour.summary %></p>
+    <div class="tcard__foot">
+      <span class="tcard__price">
+        <small>from / person</small>
+        <%= fmt.money(tour.stats.from_price_minor, tour.currency) %>
+      </span>
+      <% if (tour.stats.next_departure) { %>
+        <span class="pill pill--<%= tour.stats.next_departure.state %>">
+          <%= tour.stats.next_departure.state === 'last_seats'
+                ? tour.stats.seats_free_next + ' left ' + fmt.shortDate(tour.stats.next_departure.depart_on)
+                : 'Next ' + fmt.shortDate(tour.stats.next_departure.depart_on) %>
+        </span>
+      <% } else { %>
+        <span class="pill pill--sold_out">No dates open</span>
+      <% } %>
+    </div>
+  </div>
+</a>

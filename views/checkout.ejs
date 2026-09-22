@@ -1,0 +1,176 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="wrap">
+    <section style="padding-top:clamp(1.75rem,3.5vw,3rem)">
+      <span class="kicker">Step 2 of 2 — traveller details</span>
+      <h1 style="margin:0.9rem 0 0.5rem; font-size:clamp(2rem,1.4rem+2.4vw,3.4rem)">Confirm your seats</h1>
+      <p class="muted" style="max-width:52ch">
+        <%= hold.seats %> seat<%= hold.seats === 1 ? '' : 's' %> on
+        <strong><%= tour.title %></strong>, <%= fmt.dateRange(dep.depart_on, dep.return_on) %>.
+        Held for you until the clock below runs out.
+      </p>
+    </section>
+
+    <div class="checkout">
+      <div>
+        <div class="countdown" data-countdown data-expires="<%= hold.expires_at %>">
+          <span>Seats held for</span>
+          <b data-countdown-clock>--:--</b>
+        </div>
+
+        <% if (error) { %>
+          <div class="notice notice--warn">
+            <span class="notice__i">!</span>
+            <p><%= error %></p>
+          </div>
+        <% } %>
+
+        <% if (gateway.id === 'demo') { %>
+          <div class="notice notice--demo">
+            <span class="notice__i">i</span>
+            <p>
+              This build runs a demonstration gateway — no card is charged and no card
+              data is stored. Use <strong>4242 4242 4242 4242</strong> with any future
+              expiry and any 3 digits to succeed, or <strong>4000 0000 0000 0002</strong>
+              to see a decline handled properly.
+            </p>
+          </div>
+        <% } %>
+
+        <form method="post" action="/checkout/<%= hold.id %>" novalidate data-checkout>
+          <fieldset class="fieldset">
+            <legend>Lead traveller</legend>
+            <div class="form-grid">
+              <div class="field span-all">
+                <label class="label" for="lead_name">Full name (as on passport)</label>
+                <input type="text" id="lead_name" name="lead_name" required autocomplete="name"
+                       value="<%= form.lead_name || '' %>">
+              </div>
+              <div class="field">
+                <label class="label" for="lead_email">Email</label>
+                <input type="email" id="lead_email" name="lead_email" required autocomplete="email"
+                       value="<%= form.lead_email || '' %>">
+                <p class="hint">Your confirmation and joining instructions go here.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="lead_phone">Phone (optional)</label>
+                <input type="tel" id="lead_phone" name="lead_phone" autocomplete="tel"
+                       value="<%= form.lead_phone || '' %>">
+                <p class="hint">Used only if something changes within 48 hours of departure.</p>
+              </div>
+            </div>
+          </fieldset>
+
+          <% if (hold.seats > 1) { %>
+            <fieldset class="fieldset">
+              <legend>Travelling with you (<%= hold.seats - 1 %>)</legend>
+              <div class="form-grid">
+                <% for (var t = 2; t <= hold.seats; t++) { %>
+                  <div class="field">
+                    <label class="label" for="tn<%= t %>">Traveller <%= t %> full name</label>
+                    <input type="text" id="tn<%= t %>" name="traveller_name">
+                  </div>
+                <% } %>
+              </div>
+              <p class="hint">Names can be added later if you do not have them to hand — we will email you.</p>
+            </fieldset>
+          <% } %>
+
+          <fieldset class="fieldset">
+            <legend>Payment — <%= fmt.money(quote.amount_due_now_minor, quote.currency) %> due now</legend>
+            <div class="form-grid">
+              <div class="field span-all">
+                <label class="label" for="card_number">Card number</label>
+                <input type="text" id="card_number" name="card_number" inputmode="numeric"
+                       autocomplete="cc-number" placeholder="4242 4242 4242 4242" required>
+              </div>
+            </div>
+            <div class="form-grid form-grid--3" style="margin-top:1rem">
+              <div class="field">
+                <label class="label" for="card_exp_month">Expiry month</label>
+                <input type="text" id="card_exp_month" name="card_exp_month" inputmode="numeric"
+                       autocomplete="cc-exp-month" placeholder="09" required>
+              </div>
+              <div class="field">
+                <label class="label" for="card_exp_year">Expiry year</label>
+                <input type="text" id="card_exp_year" name="card_exp_year" inputmode="numeric"
+                       autocomplete="cc-exp-year" placeholder="2028" required>
+              </div>
+              <div class="field">
+                <label class="label" for="card_cvc">Security code</label>
+                <input type="text" id="card_cvc" name="card_cvc" inputmode="numeric"
+                       autocomplete="cc-csc" placeholder="123" required>
+              </div>
+            </div>
+            <p class="hint" style="margin-top:0.75rem">
+              Gateway in use: <%= gateway.label %>. In production this form is replaced by
+              the gateway’s own hosted fields, so card numbers never reach this server.
+            </p>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend>Anything we should know</legend>
+            <div class="field">
+              <label class="label" for="notes">Dietary needs, medical notes, room preferences</label>
+              <textarea id="notes" name="notes" rows="3"><%= form.notes || '' %></textarea>
+            </div>
+          </fieldset>
+
+          <button class="btn btn--wide" type="submit" data-pay>
+            Pay <%= fmt.money(quote.amount_due_now_minor, quote.currency) %> and confirm
+          </button>
+          <p class="hint center" style="margin-top:0.75rem">
+            <a href="/tours/<%= tour.slug %>">Back to the tour</a> —
+            leaving this page releases your seats.
+          </p>
+        </form>
+      </div>
+
+      <!-- --------------------------------------------------------- summary -->
+      <aside class="summary">
+        <div class="summary__plate">
+          <img src="/static/img/plates/<%= tour.plate %>" alt="" width="1200" height="800">
+        </div>
+        <div class="summary__body">
+          <span class="label"><%= tour.destination %>, <%= tour.country %></span>
+          <h3 style="margin:0.4rem 0 0.75rem"><%= tour.title %></h3>
+
+          <dl class="rows">
+            <div class="rows__r"><dt>Departs</dt><dd><%= fmt.shortDate(dep.depart_on) %></dd></div>
+            <div class="rows__r"><dt>Returns</dt><dd><%= fmt.shortDate(dep.return_on) %></dd></div>
+            <div class="rows__r"><dt>Travellers</dt><dd><%= hold.seats %></dd></div>
+            <div class="rows__r"><dt>Per person</dt><dd><%= fmt.money(quote.unit_price_minor, quote.currency) %></dd></div>
+            <div class="rows__r"><dt>Trip total</dt><dd><%= fmt.money(quote.amount_total_minor, quote.currency) %></dd></div>
+            <% if (quote.deposit_pct < 100) { %>
+              <div class="rows__r"><dt>Balance later</dt><dd><%= fmt.money(quote.amount_balance_minor, quote.currency) %></dd></div>
+            <% } %>
+            <div class="rows__r rows__r--total">
+              <dt class="rows__k">Pay now</dt>
+              <dd class="rows__v"><%= fmt.money(quote.amount_due_now_minor, quote.currency) %></dd>
+            </div>
+          </dl>
+
+          <p class="rows__note">
+            <% if (quote.deposit_pct < 100) { %>
+              <%= quote.deposit_pct %>% deposit today. The balance of
+              <%= fmt.money(quote.amount_balance_minor, quote.currency) %> is due 60 days
+              before departure and we will email you 14 days before that.
+            <% } else { %>
+              Paid in full today.
+            <% } %>
+          </p>
+
+          <p class="rows__note" style="margin-top:0.75rem">
+            <%= dep.seats_free %> of <%= dep.capacity %> seats were still open when these
+            were held for you.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<script src="/static/js/checkout.js" defer></script>
+<%- include('partials/footer') %>

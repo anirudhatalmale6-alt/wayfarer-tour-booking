@@ -1,0 +1,174 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <section class="section" style="padding-bottom:0">
+    <div class="wrap">
+      <span class="kicker">Internal</span>
+      <h1 style="margin:0.9rem 0 1rem; font-size:clamp(2rem,1.4rem+2.4vw,3.4rem)">Operations</h1>
+      <p class="lede">
+        The departure board the office works from: what is filling, what is held mid-checkout,
+        and every booking as it lands.
+      </p>
+      <div class="notice notice--demo" style="margin-top:1.5rem">
+        <span class="notice__i">i</span>
+        <p>
+          Unauthenticated in this demo so you can see it without credentials. A real
+          deployment puts this behind a staff login — it is the one page on the site
+          that must never be public.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:2rem">
+    <div class="wrap">
+      <div class="ticker" style="margin-bottom:2.5rem">
+        <div class="ticker__cell">
+          <span class="ticker__n"><%= totals.bookings %></span>
+          <span class="ticker__k label">Bookings taken</span>
+        </div>
+        <div class="ticker__cell">
+          <span class="ticker__n"><%= totals.seats %></span>
+          <span class="ticker__k label">Seats sold</span>
+        </div>
+        <div class="ticker__cell">
+          <span class="ticker__n"><%= fmt.money(totals.collected_minor, 'USD') %></span>
+          <span class="ticker__k label">Collected</span>
+        </div>
+        <div class="ticker__cell">
+          <span class="ticker__n"><%= departures.length %></span>
+          <span class="ticker__k label">Departures on board</span>
+        </div>
+      </div>
+
+      <div class="sec-head">
+        <div>
+          <span class="sec-head__idx">01</span>
+          <h2>Departure board</h2>
+          <p class="sec-head__sub">Next 40 departures. “Held” is seats currently inside someone’s checkout window.</p>
+        </div>
+        <div class="sec-head__rule"></div>
+      </div>
+
+      <div class="tbl-scroll" style="margin-bottom:3rem">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Departs</th>
+              <th>Tour</th>
+              <th>Fill</th>
+              <th>Booked</th>
+              <th>Held</th>
+              <th>Free</th>
+              <th>Price</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% departures.forEach(function (d) { %>
+              <% var pct = Math.round((d.seats_booked / d.capacity) * 100); %>
+              <tr>
+                <td class="n"><%= fmt.shortDate(d.depart_on) %></td>
+                <td><a href="/tours/<%= d.slug %>"><%= d.title %></a></td>
+                <td>
+                  <span class="meter" data-full="<%= d.seats_free === 0 ? 1 : 0 %>" title="<%= pct %>% booked">
+                    <i style="width:<%= pct %>%"></i>
+                  </span>
+                </td>
+                <td class="n"><%= d.seats_booked %> / <%= d.capacity %></td>
+                <td class="n"><%= d.seats_held || '—' %></td>
+                <td class="n"><%= d.seats_free %></td>
+                <td class="n"><%= fmt.money(d.price, d.currency) %></td>
+                <td>
+                  <span class="pill pill--<%= d.seats_free === 0 ? 'sold_out' : (d.seats_free <= 3 ? 'last_seats' : 'available') %>">
+                    <%= d.status !== 'open' ? d.status : (d.seats_free === 0 ? 'full' : (d.seats_free <= 3 ? 'last few' : 'open')) %>
+                  </span>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sec-head">
+        <div>
+          <span class="sec-head__idx">02</span>
+          <h2>Bookings</h2>
+          <p class="sec-head__sub">Most recent first. Amounts are what was actually taken at checkout.</p>
+        </div>
+        <div class="sec-head__rule"></div>
+      </div>
+
+      <% if (!bookings.length) { %>
+        <div class="notice notice--info">
+          <span class="notice__i">[ ]</span>
+          <p>No bookings yet. Take one through the site and it will appear here immediately.</p>
+        </div>
+      <% } else { %>
+        <div class="tbl-scroll" style="margin-bottom:3rem">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Ref</th>
+                <th>Tour</th>
+                <th>Departs</th>
+                <th>Lead traveller</th>
+                <th>Seats</th>
+                <th>Paid</th>
+                <th>Of total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% bookings.forEach(function (b) { %>
+                <tr>
+                  <td class="n"><a href="/booking/<%= b.reference %>"><%= b.reference %></a></td>
+                  <td><%= b.title %></td>
+                  <td class="n"><%= fmt.shortDate(b.depart_on) %></td>
+                  <td><%= b.lead_name %><br><span class="mono-sm" style="text-transform:none"><%= b.lead_email %></span></td>
+                  <td class="n"><%= b.seats %></td>
+                  <td class="n"><%= fmt.money(b.amount_due_now, b.currency) %></td>
+                  <td class="n"><%= fmt.money(b.amount_total, b.currency) %></td>
+                  <td><span class="pill pill--<%= b.status === 'confirmed' ? 'available' : 'closed' %>"><%= b.status %></span></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+
+      <div class="sec-head">
+        <div>
+          <span class="sec-head__idx">03</span>
+          <h2>Event trail</h2>
+          <p class="sec-head__sub">Append-only. This is what you read back when a traveller says “I definitely had a seat”.</p>
+        </div>
+        <div class="sec-head__rule"></div>
+      </div>
+
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead>
+            <tr><th>When</th><th>Event</th><th>Subject</th><th>Detail</th></tr>
+          </thead>
+          <tbody>
+            <% if (!events.length) { %>
+              <tr><td colspan="4" class="muted">Nothing logged yet.</td></tr>
+            <% } %>
+            <% events.forEach(function (e) { %>
+              <tr>
+                <td class="n"><%= e.created_at %></td>
+                <td class="n"><%= e.kind %></td>
+                <td class="n" style="max-width:12rem; overflow:hidden; text-overflow:ellipsis"><%= e.subject || '—' %></td>
+                <td class="mono-sm" style="text-transform:none; max-width:26rem; overflow-wrap:anywhere"><%= e.payload %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

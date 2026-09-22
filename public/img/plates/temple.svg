@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img">
+  <defs>
+    <linearGradient id="sky-temple" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3A2A4A"/>
+      <stop offset="55%" stop-color="#8A5C79"/>
+      <stop offset="100%" stop-color="#E9B98C"/>
+    </linearGradient>
+    <radialGradient id="glow-temple">
+      <stop offset="0%" stop-color="#FBE6C6" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FBE6C6" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="grain-temple" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" seed="7" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.10"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky-temple)"/>
+  
+  <circle cx="408" cy="224" r="54" fill="#FBE6C6" filter="url(#soft)" opacity="0.95"/><circle cx="408" cy="224" r="140.4" fill="url(#glow-temple)" opacity="0.5"/>
+  <path d="M 0 560 L -79.26 527.25 L 0 418.45 L 144.86 514.28 L 200 417.64 L 304.59 521.28 L 400 454.48 L 520.02 522.67 L 600 430.57 L 712.15 512.24 L 800 413.08 L 933.24 527.75 L 1000 418.77 L 1124.65 522.78 L 1200 380.8 L 1200 560 L 1200 800 L 0 800 Z" fill="#6B4D67" opacity="0.75"/>
+  <path d="M 288 656 L 288 608 L 912 608 L 912 656 Z M 332.93 608 L 332.93 560 L 867.07 560 L 867.07 608 Z M 377.86 560 L 377.86 512 L 822.14 512 L 822.14 560 Z M 422.78 512 L 422.78 464 L 777.22 464 L 777.22 512 Z M 467.71 464 L 467.71 416 L 732.29 416 L 732.29 464 Z M 586 416 L 600 344 L 614 416 Z" fill="#2E2138" opacity="1"/>
+  <path d=" M -50.78 704 L -33.16 646.48 L -15.55 704 Z M -6.08 704 L 8.4 601.35 L 22.88 704 Z M 9.47 704 L 25.92 611.3 L 42.38 704 Z M 40.61 704 L 56.38 628.67 L 72.16 704 Z M 73.71 704 L 87.7 619.98 L 101.68 704 Z M 94.03 704 L 111.37 625.37 L 128.7 704 Z M 130.84 704 L 142.56 658.24 L 154.29 704 Z M 154.53 704 L 171.53 611.57 L 188.54 704 Z M 185.98 704 L 202.16 663.38 L 218.34 704 Z M 224.5 704 L 240.18 626.04 L 255.85 704 Z M 256.41 704 L 267.13 615.45 L 277.85 704 Z M 276.14 704 L 291.54 652.76 L 306.93 704 Z M 307.72 704 L 326.84 659.8 L 345.95 704 Z M 341.11 704 L 353.41 618.23 L 365.72 704 Z M 386.72 704 L 398.27 629.43 L 409.82 704 Z M 404.81 704 L 415.59 614.77 L 426.37 704 Z M 438.57 704 L 453.35 604.98 L 468.14 704 Z M 464.79 704 L 479.76 636.65 L 494.73 704 Z M 502.59 704 L 516.77 625.73 L 530.95 704 Z M 529.92 704 L 541.13 627.61 L 552.34 704 Z M 559.07 704 L 570.08 610.82 L 581.1 704 Z M 590.46 704 L 602.01 636.24 L 613.56 704 Z M 604.12 704 L 622.59 653.57 L 641.07 704 Z M 653.63 704 L 666.07 615.92 L 678.51 704 Z M 680.06 704 L 692.57 600.2 L 705.07 704 Z M 710.67 704 L 725.52 616.73 L 740.38 704 Z M 730.46 704 L 748.55 619.83 L 766.64 704 Z M 769.1 704 L 781.73 643.33 L 794.36 704 Z M 807.19 704 L 818.94 646.9 L 830.69 704 Z M 821.22 704 L 837.46 613.9 L 853.71 704 Z M 854.69 704 L 870.53 658.84 L 886.36 704 Z M 886.88 704 L 900.42 616.98 L 913.96 704 Z M 922.84 704 L 937.59 630.58 L 952.33 704 Z M 939.65 704 L 955.12 627 L 970.58 704 Z M 984.47 704 L 995.85 656.92 L 1007.24 704 Z M 1009.14 704 L 1026.44 662.1 L 1043.73 704 Z M 1033.82 704 L 1052.67 630.39 L 1071.52 704 Z M 1072.03 704 L 1085.47 602.02 L 1098.9 704 Z M 1100.41 704 L 1112.21 608.82 L 1124 704 Z M 1135.08 704 L 1147.54 610.42 L 1160 704 Z M 1161.75 704 L 1178.64 640.35 L 1195.54 704 Z M 1180.02 704 L 1191.47 605.45 L 1202.91 704 Z M 1222.89 704 L 1233.98 636.09 L 1245.07 704 Z M 0 703 L 1200 703 L 1200 800 L 0 800 Z" fill="#1B1324" opacity="1"/>
+  
+  <rect width="1200" height="800" filter="url(#grain-temple)" opacity="0.5" style="mix-blend-mode:overlay"/>
+</svg>

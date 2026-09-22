@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img">
+  <defs>
+    <linearGradient id="sky-dunes" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9C4B2A"/>
+      <stop offset="55%" stop-color="#D98B4A"/>
+      <stop offset="100%" stop-color="#F2CE8E"/>
+    </linearGradient>
+    <radialGradient id="glow-dunes">
+      <stop offset="0%" stop-color="#FFF0CE" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFF0CE" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="grain-dunes" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" seed="7" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.10"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky-dunes)"/>
+  
+  <circle cx="336" cy="272" r="58" fill="#FFF0CE" filter="url(#soft)" opacity="0.95"/><circle cx="336" cy="272" r="150.8" fill="url(#glow-dunes)" opacity="0.5"/>
+  <path d="M 0 480 C 96 480 144 510.14 240 510.14 C 336 510.14 384 446.79 480 446.79 C 576 446.79 624 501.2 720 501.2 C 816 501.2 864 461.77 960 461.77 C 1056 461.77 1104 441.27 1200 441.27 L 1200 800 L 0 800 Z" fill="#C9743E" opacity="0.95"/>
+  <path d="M 0 576 C 120 576 180 540.08 300 540.08 C 420 540.08 480 574.16 600 574.16 C 720 574.16 780 616.42 900 616.42 C 1020 616.42 1080 567 1200 567 L 1200 800 L 0 800 Z" fill="#A8552C" opacity="1"/>
+  <path d="M 0 680 C 160 680 240 648.75 400 648.75 C 560 648.75 640 699.3 800 699.3 C 960 699.3 1040 640.97 1200 640.97 L 1200 800 L 0 800 Z" fill="#6E3520" opacity="1"/>
+  
+  <rect width="1200" height="800" filter="url(#grain-dunes)" opacity="0.5" style="mix-blend-mode:overlay"/>
+</svg>

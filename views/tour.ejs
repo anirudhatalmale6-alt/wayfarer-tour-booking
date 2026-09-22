@@ -1,0 +1,205 @@
+<%- include('partials/head', { title: title, metaDescription: tour.summary }) %>
+<%- include('partials/header') %>
+
+<main>
+  <section class="tourhead">
+    <div class="wrap">
+      <div class="tourhead__grid">
+        <div>
+          <span class="kicker"><%= tour.category %> · <%= tour.destination %>, <%= tour.country %></span>
+          <h1 style="margin:0.9rem 0 0"><%= tour.title %></h1>
+          <p class="lede" style="margin-top:1rem"><%= tour.summary %></p>
+        </div>
+        <figure class="tourhead__plate" style="margin:0">
+          <img src="/static/img/plates/<%= tour.plate %>" alt="Illustrated plate for <%= tour.title %>" width="1200" height="800">
+        </figure>
+      </div>
+
+      <div class="tourhead__meta">
+        <span class="label"><%= fmt.nights(tour.duration_days) %></span>
+        <span class="label">Grade: <%= tour.difficulty %></span>
+        <span class="label"><%= tour.stats.departures_bookable %> of <%= tour.stats.departures_total %> departures open</span>
+        <span class="label">Deposit <%= tour.deposit_pct %>%</span>
+        <span class="label">From <%= fmt.money(tour.stats.from_price_minor, tour.currency) %> per person</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="tourbody">
+      <!-- ------------------------------------------------------------- prose -->
+      <div class="prose">
+        <% if (query.error) { %>
+          <div class="notice notice--warn">
+            <span class="notice__i">!</span>
+            <p><%= query.error %></p>
+          </div>
+        <% } %>
+
+        <h3>About the trip</h3>
+        <p><%= tour.description %></p>
+
+        <h3>What makes it worth the airfare</h3>
+        <ul class="hl-list">
+          <% tour.highlights.forEach(function (h) { %>
+            <li><span><%= h %></span></li>
+          <% }); %>
+        </ul>
+
+        <h3>Day by day</h3>
+        <div class="itin">
+          <% tour.itinerary.forEach(function (d) { %>
+            <div class="itin__row">
+              <div class="itin__day">Day <%= d.day %></div>
+              <div>
+                <div class="itin__t"><%= d.title %></div>
+                <p class="itin__b"><%= d.body %></p>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <h3>What is and isn’t included</h3>
+        <div class="twocol">
+          <div>
+            <p class="label" style="margin-bottom:0.5rem">Included</p>
+            <ul class="tick-list">
+              <% tour.included.forEach(function (x) { %><li><%= x %></li><% }); %>
+            </ul>
+          </div>
+          <div>
+            <p class="label" style="margin-bottom:0.5rem">Not included</p>
+            <ul class="cross-list">
+              <% tour.excluded.forEach(function (x) { %><li><%= x %></li><% }); %>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Booking terms for this tour</h3>
+        <p class="muted">
+          A <%= tour.deposit_pct %>% deposit confirms your seat; the balance is due
+          60 days before departure. Departures close to online booking
+          <%= cutoffDays %> days before they leave — after that, send an enquiry and
+          we will check by hand. Groups above <%= maxSeats %> travellers are arranged
+          off-site rather than through this form.
+        </p>
+      </div>
+
+      <!-- ------------------------------------------------------ booking panel -->
+      <aside class="bookpanel" id="dates" data-slug="<%= tour.slug %>" data-currency="<%= tour.currency %>" data-max-seats="<%= maxSeats %>">
+        <div class="bookpanel__head">
+          <div>
+            <span class="label" style="display:block">From</span>
+            <span class="bookpanel__price"><%= fmt.money(tour.stats.from_price_minor, tour.currency) %></span>
+          </div>
+          <span class="bookpanel__live" data-live>
+            <span class="dot"></span>
+            <span data-live-text>Live</span>
+          </span>
+        </div>
+
+        <div class="bookpanel__body">
+          <!-- Calendar is built by JS from the availability API. -->
+          <div data-calendar hidden>
+            <div class="cal__bar">
+              <div class="cal__month" data-cal-month>—</div>
+              <div class="cal__nav">
+                <button type="button" data-cal-prev aria-label="Previous month">‹</button>
+                <button type="button" data-cal-next aria-label="Next month">›</button>
+              </div>
+            </div>
+            <div class="cal__dow" aria-hidden="true">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+            <div class="cal__grid" data-cal-grid role="group" aria-label="Departure dates"></div>
+            <div class="cal__legend">
+              <span><i class="open"></i> Seats open</span>
+              <span><i class="few"></i> Last few</span>
+              <span><i class="none"></i> Unavailable</span>
+            </div>
+          </div>
+
+          <form method="post" action="/book" data-book-form>
+            <!-- No-JS path: a plain list of every bookable departure. The
+                 calendar above replaces this when JS is available. -->
+            <div data-fallback>
+              <div class="field" style="margin-bottom:1rem">
+                <label class="label" for="dep-select">Choose a departure</label>
+                <select id="dep-select" name="departure_id" required>
+                  <% var openDeps = departures.filter(function (d) { return d.bookable; }); %>
+                  <% if (!openDeps.length) { %>
+                    <option value="">No departures currently open</option>
+                  <% } %>
+                  <% openDeps.forEach(function (d) { %>
+                    <option value="<%= d.id %>">
+                      <%= fmt.dateRange(d.depart_on, d.return_on) %> — <%= fmt.money(d.price, tour.currency) %> — <%= fmt.seatLine(d) %>
+                    </option>
+                  <% }); %>
+                </select>
+              </div>
+            </div>
+
+            <div class="slot" data-slot>
+              <p class="slot__empty" data-slot-empty>
+                Pick a highlighted date to see the price and what is left on it.
+              </p>
+
+              <div data-slot-detail hidden>
+                <div class="slot__date" data-slot-date></div>
+                <div class="slot__ret" data-slot-return></div>
+                <div style="margin-bottom:0.9rem"><span class="pill" data-slot-pill></span></div>
+
+                <div class="field" style="margin-bottom:1rem">
+                  <span class="label" id="seats-label">Travellers</span>
+                  <div class="stepper" role="group" aria-labelledby="seats-label">
+                    <button type="button" data-seat-down aria-label="One fewer traveller">−</button>
+                    <output data-seat-out for="seats">1</output>
+                    <button type="button" data-seat-up aria-label="One more traveller">+</button>
+                  </div>
+                  <p class="hint" data-seat-hint></p>
+                </div>
+
+                <dl class="rows" data-quote>
+                  <div class="rows__r"><dt data-q-unit-k>Per person</dt><dd data-q-unit>—</dd></div>
+                  <div class="rows__r"><dt>Trip total</dt><dd data-q-total>—</dd></div>
+                  <div class="rows__r rows__r--total"><dt class="rows__k">Pay now</dt><dd class="rows__v" data-q-due>—</dd></div>
+                </dl>
+                <p class="rows__note" data-q-note></p>
+              </div>
+
+              <input type="hidden" name="seats" value="1" data-seats-input>
+              <button class="btn btn--wide" type="submit" style="margin-top:1.1rem" data-submit>
+                Hold these seats
+              </button>
+              <p class="hint" style="text-align:center">
+                Seats are held for <%= holdMinutes %> minutes. No charge until you confirm.
+              </p>
+            </div>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <% if (related.length) { %>
+  <section class="section section--sunk">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="sec-head__idx">Also <%= tour.category %></span>
+          <h2>If the dates don’t work</h2>
+        </div>
+        <div class="sec-head__rule"></div>
+      </div>
+      <div class="grid-tours">
+        <% related.forEach(function (t, idx) { %>
+          <%- include('partials/tourcard', { tour: t, i: idx }) %>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+  <% } %>
+</main>
+
+<script src="/static/js/booking.js" defer></script>
+<%- include('partials/footer') %>

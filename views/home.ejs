@@ -1,0 +1,137 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero__grid">
+        <div>
+          <span class="kicker rise" style="--i:0">Departures held open, not oversold</span>
+          <h1 class="rise" style="--i:1">
+            The seat count you see is the <em>seat count there is</em>.
+          </h1>
+          <p class="lede rise" style="--i:2">
+            Nine small-group tours across three continents — trekking, city weeks and
+            private charter. Every date on this site is checked against live inventory
+            the moment you load it, and held for <%= holdMinutes %> minutes once you
+            start booking, so nobody takes your place while you are typing.
+          </p>
+          <div class="rise" style="--i:3; display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.75rem">
+            <a class="btn" href="/tours">Browse all <%= tourCount %> tours</a>
+            <a class="btn btn--ghost" href="/tours?available=1">Dates with seats left</a>
+          </div>
+        </div>
+
+        <figure class="hero__plate rise" style="--i:2; margin:0">
+          <img src="/static/img/plates/ridgeline.svg" alt="Illustrated plate: the Annapurna ridgeline at sunrise" width="1200" height="800">
+          <figcaption>
+            <span>Plate I — Annapurna Sanctuary</span>
+            <span>28.53° N</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="ticker rise" style="--i:4">
+        <div class="ticker__cell">
+          <span class="ticker__n"><%= liveStats.departures %></span>
+          <span class="ticker__k label">Departures open</span>
+        </div>
+        <div class="ticker__cell">
+          <span class="ticker__n"><%= liveStats.seats_open %></span>
+          <span class="ticker__k label">Seats unsold</span>
+        </div>
+        <div class="ticker__cell">
+          <span class="ticker__n"><%= tourCount %></span>
+          <span class="ticker__k label">Tours running</span>
+        </div>
+        <div class="ticker__cell">
+          <span class="ticker__n">12</span>
+          <span class="ticker__k label">Max group size</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <% if (soonest.length) { %>
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="sec-head__idx">01 — Leaving next</span>
+          <h2>Closest departures</h2>
+        </div>
+        <div class="sec-head__rule"></div>
+      </div>
+      <div class="grid-tours">
+        <% soonest.forEach(function (tour, idx) { %>
+          <%- include('partials/tourcard', { tour: tour, i: idx }) %>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <% featured.forEach(function (cat, ci) { %>
+    <% if (!cat.tours.length) return; %>
+    <section class="section <%= ci % 2 === 0 ? 'section--sunk' : '' %>">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <span class="sec-head__idx"><%= String(ci + 2).padStart(2, '0') %> — <%= cat.label %></span>
+            <h2><%= cat.label %></h2>
+            <p class="sec-head__sub"><%= cat.blurb %></p>
+          </div>
+          <div class="sec-head__rule"></div>
+        </div>
+        <div class="grid-tours">
+          <% cat.tours.forEach(function (tour, idx) { %>
+            <%- include('partials/tourcard', { tour: tour, i: idx }) %>
+          <% }); %>
+        </div>
+      </div>
+    </section>
+  <% }); %>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="sec-head__idx">05 — The booking part</span>
+          <h2>How a seat actually gets sold</h2>
+        </div>
+        <div class="sec-head__rule"></div>
+      </div>
+
+      <div class="twocol">
+        <div>
+          <h3>Availability is read, not cached</h3>
+          <p class="muted">
+            Every calendar cell is answered by the database at the moment you open the
+            page, and refreshed when you change month or come back to the tab. A seat
+            that sold while you were reading the itinerary goes grey in front of you.
+          </p>
+        </div>
+        <div>
+          <h3>Seats are held during checkout</h3>
+          <p class="muted">
+            Choosing a date claims those seats for <%= holdMinutes %> minutes before
+            the form even appears. The clock is on screen. If it runs out, the seats go
+            back to the pool — we would rather release them than sell them twice.
+          </p>
+        </div>
+        <div>
+          <h3>The database refuses to oversell</h3>
+          <p class="muted">
+            The final seat increment is guarded inside the transaction itself. Even if
+            two payments landed in the same millisecond, only one can take the last
+            seat, and the other is told before any money moves.
+          </p>
+        </div>
+      </div>
+
+      <p><a class="btn btn--ink" href="/how-it-works">Read the booking rules in full</a></p>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

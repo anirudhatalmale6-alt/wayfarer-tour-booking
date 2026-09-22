@@ -1,0 +1,119 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <section class="section" style="padding-bottom:0">
+    <div class="wrap">
+      <span class="kicker">The rules, written down</span>
+      <h1 style="margin:0.9rem 0 1rem">How booking works</h1>
+      <p class="lede">
+        Availability is the part of a travel site people get lied to about most, so
+        here is exactly what happens between you clicking a date and a seat being
+        yours.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="itin" style="max-width:62rem">
+        <div class="itin__row" id="live">
+          <div class="itin__day">Step 01</div>
+          <div>
+            <div class="itin__t">The calendar reads live inventory</div>
+            <p class="itin__b">
+              Every date is answered from the database when the page loads, again when
+              you change month, again when you come back to the tab, and once more
+              every minute you leave it open. A departure that fills while you are
+              reading the itinerary turns grey in front of you, with a note saying so.
+              Nothing on this site is served from a cached seat count.
+            </p>
+          </div>
+        </div>
+
+        <div class="itin__row" id="holds">
+          <div class="itin__day">Step 02</div>
+          <div>
+            <div class="itin__t">Choosing a date holds the seats for <%= holdMinutes %> minutes</div>
+            <p class="itin__b">
+              The hold is taken before the payment form is shown, not after. That is
+              the whole point: you should never be asked for a card for a seat that
+              someone else is in the middle of buying. The clock is visible on the
+              checkout page. If it runs out the seats go straight back to the pool and
+              nothing is charged — we would rather release a seat than sell it twice.
+            </p>
+          </div>
+        </div>
+
+        <div class="itin__row">
+          <div class="itin__day">Step 03</div>
+          <div>
+            <div class="itin__t">The last seat can only be sold once</div>
+            <p class="itin__b">
+              The final seat increment is guarded inside the database transaction
+              itself — the write simply will not apply if it would push a departure
+              past its capacity. If two payments arrived in the same instant, one
+              succeeds and the other is told before any money moves. This is belt and
+              braces on top of the hold, and it is the reason we can print a real
+              number instead of “limited availability”.
+            </p>
+          </div>
+        </div>
+
+        <div class="itin__row" id="deposits">
+          <div class="itin__day">Step 04</div>
+          <div>
+            <div class="itin__t">Deposits and balances</div>
+            <p class="itin__b">
+              Adventure trips take a 30% deposit, city breaks 50%, and charters 25%,
+              because that is roughly when we have to commit money to lodges, boats and
+              crew. The balance is due 60 days before departure and we email a reminder
+              at 74 days. Deposits are calculated in whole currency units — you will
+              never see a bill ending in a stray fraction of a cent.
+            </p>
+          </div>
+        </div>
+
+        <div class="itin__row">
+          <div class="itin__day">Step 05</div>
+          <div>
+            <div class="itin__t">Online booking closes <%= cutoffDays %> days before departure</div>
+            <p class="itin__b">
+              After that the guide already has the manifest and the permits are filed,
+              so late joiners are handled by hand rather than by form. Parties above
+              <%= maxSeats %> travellers are also arranged off-site — a group that size
+              changes the vehicle, the guide ratio and usually the price.
+            </p>
+          </div>
+        </div>
+
+        <div class="itin__row" id="cancellation">
+          <div class="itin__day">Step 06</div>
+          <div>
+            <div class="itin__t">If you cancel, or we do</div>
+            <p class="itin__b">
+              Cancel more than 60 days out and you lose the deposit only. Inside 60
+              days the balance is non-refundable, which is what travel insurance is
+              for — and insurance is a condition of joining any of the adventure
+              departures. If <em>we</em> cancel a departure, for weather, permits or
+              numbers, you get the full amount back including the deposit, or a
+              transfer to any other date at the price you originally paid.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="notice notice--demo" style="max-width:62rem; margin-top:2rem">
+        <span class="notice__i">i</span>
+        <p>
+          This is a demonstration build. The catalogue is illustrative, the payment
+          gateway is a stand-in that cannot charge a real card, and the terms above
+          are written as an example of the level of detail a real booking page needs —
+          they are not a contract.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

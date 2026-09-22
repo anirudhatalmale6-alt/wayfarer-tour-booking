@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img">
+  <defs>
+    <linearGradient id="sky-vineyard" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A5030"/>
+      <stop offset="55%" stop-color="#8C9354"/>
+      <stop offset="100%" stop-color="#E7DCA8"/>
+    </linearGradient>
+    <radialGradient id="glow-vineyard">
+      <stop offset="0%" stop-color="#FBF3CE" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FBF3CE" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="grain-vineyard" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" seed="7" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.10"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky-vineyard)"/>
+  
+  <circle cx="912" cy="240" r="62" fill="#FBF3CE" filter="url(#soft)" opacity="0.95"/><circle cx="912" cy="240" r="161.20000000000002" fill="url(#glow-vineyard)" opacity="0.5"/>
+  <path d="M 0 480 C 96 480 144 424.44 240 424.44 C 336 424.44 384 467.65 480 467.65 C 576 467.65 624 473.45 720 473.45 C 816 473.45 864 445.62 960 445.62 C 1056 445.62 1104 429.68 1200 429.68 L 1200 800 L 0 800 Z" fill="#7C8A4C" opacity="0.95"/>
+  <path d="M -600 800 L 582.72 588 M -507.69 800 L 593.8 588 M -415.38 800 L 604.87 588 M -323.08 800 L 615.95 588 M -230.77 800 L 627.03 588 M -138.46 800 L 638.1 588 M -46.15 800 L 649.18 588 M 46.15 800 L 660.26 588 M 138.46 800 L 671.34 588 M 230.77 800 L 682.41 588 M 323.08 800 L 693.49 588 M 415.38 800 L 704.57 588 M 507.69 800 L 715.64 588 M 600 800 L 726.72 588 M 692.31 800 L 737.8 588 M 784.62 800 L 748.87 588 M 876.92 800 L 759.95 588 M 969.23 800 L 771.03 588 M 1061.54 800 L 782.1 588 M 1153.85 800 L 793.18 588 M 1246.15 800 L 804.26 588 M 1338.46 800 L 815.34 588 M 1430.77 800 L 826.41 588 M 1523.08 800 L 837.49 588 M 1615.38 800 L 848.57 588 M 1707.69 800 L 859.64 588 M 1800 800 L 870.72 588" fill="none" stroke="#5B6733" stroke-width="5" opacity="1"/>
+  <path d="M 0 720 C 160 720 240 722.59 400 722.59 C 560 722.59 640 712.25 800 712.25 C 960 712.25 1040 711.29 1200 711.29 L 1200 800 L 0 800 Z" fill="#3A431F" opacity="1"/>
+  
+  <rect width="1200" height="800" filter="url(#grain-vineyard)" opacity="0.5" style="mix-blend-mode:overlay"/>
+</svg>
